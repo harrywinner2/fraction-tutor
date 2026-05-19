@@ -99,13 +99,20 @@ export default function EquivalenceStage({
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="mt-2 flex items-center gap-3 rounded-full border border-gold/30 bg-gold/5 px-6 py-3 font-display text-2xl font-semibold text-gold-soft tabular-nums"
+          className="mt-2 flex flex-col items-center gap-2 rounded-2xl border border-gold/30 bg-gold/5 px-7 py-4 font-display text-2xl font-semibold text-gold-soft tabular-nums"
         >
-          <span>1/2</span>
-          <span className="text-cream/40">=</span>
-          <span>2/4</span>
-          <span className="text-cream/40">=</span>
-          <span>3/6</span>
+          <div className="flex items-center gap-3">
+            <span>1/2</span>
+            <span className="text-cream/40">=</span>
+            <span>2/4</span>
+            <span className="text-cream/40">=</span>
+            <span>3/6</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span>1/3</span>
+            <span className="text-cream/40">=</span>
+            <span>2/6</span>
+          </div>
         </motion.div>
       )}
     </div>

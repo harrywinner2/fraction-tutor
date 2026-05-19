@@ -177,7 +177,7 @@ export const BEATS: Record<string, Beat> = {
 
   check3: {
     id: 'check3',
-    text: 'Last one — true or false? Three out of six is also the same as one half. Look at the bars and decide.',
+    text: 'True or false? Three out of six is also the same as one half. Look at the bars and decide.',
     stage: {
       kind: 'compare',
       top: { segments: 2, filled: 1, label: 'one half' },
@@ -185,7 +185,7 @@ export const BEATS: Record<string, Beat> = {
       showEquals: true,
     },
     choices: [
-      { label: 'True', next: 'finale', correct: true },
+      { label: 'True', next: 'generalize_intro', correct: true },
       { label: 'False', next: 'check3_miss' },
     ],
     mood: 'curious',
@@ -200,13 +200,63 @@ export const BEATS: Record<string, Beat> = {
       bottom: { segments: 6, filled: 3, label: 'three sixths' },
       showEquals: true,
     },
-    choices: [{ label: 'Oh — True!', next: 'finale' }],
+    choices: [{ label: 'Oh — True!', next: 'generalize_intro' }],
+    mood: 'encourage',
+  },
+
+  generalize_intro: {
+    id: 'generalize_intro',
+    text: "One big question. We did all that with halves. Does the same trick work for other fractions too? Here's one third — give it a smash and let's see.",
+    stage: {
+      kind: 'single',
+      top: { segments: 3, filled: 1, interactive: 'smash', label: 'one third' },
+    },
+    gate: 'smash',
+    gateNext: 'generalize_react',
+    mood: 'curious',
+  },
+
+  generalize_react: {
+    id: 'generalize_react',
+    text: 'Look at that! One third turned into two sixths — and the chocolate is still exactly the same amount. The trick is not just for halves. It works for every fraction.',
+    stage: { kind: 'single', top: 'keep' },
+    continueLabel: 'Whoa',
+    next: 'generalize_check',
+    mood: 'surprised',
+  },
+
+  generalize_check: {
+    id: 'generalize_check',
+    text: 'So tell me — is one third the same amount as two sixths? Check the bars.',
+    stage: {
+      kind: 'compare',
+      top: { segments: 3, filled: 1, label: 'one third' },
+      bottom: { segments: 6, filled: 2, label: 'two sixths' },
+      showEquals: true,
+    },
+    choices: [
+      { label: 'Yes — same!', next: 'finale', correct: true },
+      { label: 'No', next: 'generalize_miss' },
+    ],
+    mood: 'curious',
+  },
+
+  generalize_miss: {
+    id: 'generalize_miss',
+    text: 'Peek at the bars — the gold ends at the very same line for both. So one third and two sixths really are the same amount. Want to call it again?',
+    stage: {
+      kind: 'compare',
+      top: { segments: 3, filled: 1, label: 'one third' },
+      bottom: { segments: 6, filled: 2, label: 'two sixths' },
+      showEquals: true,
+    },
+    choices: [{ label: 'Yes — same!', next: 'finale' }],
     mood: 'encourage',
   },
 
   finale: {
     id: 'finale',
-    text: 'You did it! One half, two quarters, three sixths — all the same amount of chocolate, just cut into different pieces. That is fraction equivalence, and you figured it out yourself. Awesome work.',
+    text: 'You did it! One half is two quarters is three sixths. One third is two sixths. Cut every piece into more pieces and the amount never changes — and that works for any fraction. You did not just learn a fact, you found the rule. Awesome work.',
     stage: {
       kind: 'compare',
       top: { segments: 2, filled: 1, label: 'one half' },

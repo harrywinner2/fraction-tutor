@@ -13,20 +13,23 @@ It's built to be played on an iPad in the browser, held sideways, with sound on.
 
 ## The lesson
 
-The whole thing is one tight arc: **explore → learn → check → win.**
+The whole thing is one tight arc: **explore → learn → check → generalise → win.**
 
 1. **Explore.** The student gets half a chocolate bar and is invited to *smash*
    it. Each smash cuts every piece in two — but the gold part never grows or
    shrinks. That's the revelation, discovered by hand before it's ever named.
 2. **Learn.** The tutor names what they just saw: one half and two quarters
    reach the exact same line, so they're *equivalent*.
-3. **Check.** Three checks with warm, non-punishing branches:
+3. **Check.** Warm, non-punishing checks:
    - *Build it:* fill quarters until the bottom bar matches one half.
    - *Spot it:* which fraction equals ½? Wrong answers get a gentle "look with
      me" demo and a retry — never a buzzer.
-   - *Generalise it:* is 3/6 also a half? They reason straight off the bars.
-4. **Win.** A real celebration — the crowd cheers, the equals sign ignites,
-   and the discovery ledger reads `1/2 = 2/4 = 3/6`.
+   - *Confirm it:* is 3/6 also a half? They reason straight off the bars.
+4. **Generalise.** The payoff: smash a *non-half* fraction — `1/3 → 2/6` — and
+   discover the rule isn't a half-trick, it holds for *any* fraction. This is
+   the "deep conceptual understanding" beat, not just pattern-matching.
+5. **Win.** A real celebration — the crowd cheers, the equals sign ignites,
+   and the discovery ledger reads `1/2 = 2/4 = 3/6` and `1/3 = 2/6`.
 
 The tutor's dialogue is entirely hand-scripted (no LLM), so the tone stays
 warm and the branching stays predictable for a young learner.
