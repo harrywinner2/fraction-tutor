@@ -48,8 +48,11 @@ export default function FractionBar({
 
   const handleCell = (index: number) => {
     if (interactive !== 'build' || !onBuildChange) return
-    // Tapping the last filled piece clears it; otherwise fill up to here.
-    onBuildChange(index + 1 === filled ? index : index + 1)
+    // One tap = one quarter. Tap an empty piece to add a quarter, a filled
+    // piece to take one back — so the student builds the fraction by hand,
+    // one piece at a time, and feels the moment it matches the half.
+    const isFilled = index < filled
+    onBuildChange(isFilled ? filled - 1 : filled + 1)
   }
 
   const cells = Array.from({ length: segments }, (_, i) => i)

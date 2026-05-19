@@ -88,7 +88,7 @@ export const BEATS: Record<string, Beat> = {
 
   check1_intro: {
     id: 'check1_intro',
-    text: 'Your turn! Make the bottom bar show the same amount as the half on top — using quarters. Tap the bottom bar to fill in pieces.',
+    text: 'Your turn! Make the bottom bar show the same amount as the half on top. Tap a quarter to fill it in — one at a time — and watch what happens.',
     stage: {
       kind: 'compare',
       top: { segments: 2, filled: 1, label: 'one half' },
