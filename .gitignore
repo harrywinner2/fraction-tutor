@@ -1,0 +1,16 @@
+# dependencies / build output
+node_modules
+dist
+*.local
+*.log
+
+# os / editor cruft
+.DS_Store
+.idea
+.vscode
+
+# project briefing + scratch — kept local, never published
+bootstrap/
+.claude/
+notes/
+*.notes.md

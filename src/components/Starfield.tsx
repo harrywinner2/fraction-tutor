@@ -1,0 +1,62 @@
+import { useMemo } from 'react'
+
+/**
+ * The deep-space backdrop from the Synthesis world: a dark navy gradient,
+ * two soft nebula glows, and a field of slowly twinkling stars. Generated
+ * once and memoised so it never re-renders during the lesson.
+ */
+export default function Starfield() {
+  const stars = useMemo(
+    () =>
+      Array.from({ length: 70 }, (_, i) => ({
+        id: i,
+        top: Math.random() * 100,
+        left: Math.random() * 100,
+        size: Math.random() * 2 + 1,
+        delay: Math.random() * 6,
+        duration: Math.random() * 4 + 3,
+        opacity: Math.random() * 0.5 + 0.25,
+      })),
+    [],
+  )
+
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(120% 90% at 50% 8%, #142046 0%, #0e1530 38%, #0a0f1f 66%, #070b16 100%)',
+        }}
+      />
+      <div
+        className="absolute -left-32 top-1/4 h-[42rem] w-[42rem] rounded-full opacity-40 blur-3xl"
+        style={{ background: 'radial-gradient(circle, rgba(70,90,170,0.35), transparent 70%)' }}
+      />
+      <div
+        className="absolute -right-40 bottom-0 h-[40rem] w-[40rem] rounded-full opacity-30 blur-3xl"
+        style={{ background: 'radial-gradient(circle, rgba(227,178,60,0.16), transparent 70%)' }}
+      />
+      {stars.map((s) => (
+        <span
+          key={s.id}
+          className="absolute rounded-full bg-white"
+          style={{
+            top: `${s.top}%`,
+            left: `${s.left}%`,
+            width: s.size,
+            height: s.size,
+            opacity: s.opacity,
+            animation: `twinkle ${s.duration}s ease-in-out ${s.delay}s infinite`,
+          }}
+        />
+      ))}
+      <style>{`
+        @keyframes twinkle {
+          0%, 100% { opacity: 0.15; transform: scale(0.8); }
+          50%      { opacity: 0.9;  transform: scale(1.15); }
+        }
+      `}</style>
+    </div>
+  )
+}
