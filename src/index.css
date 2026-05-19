@@ -58,6 +58,17 @@ body {
   }
 }
 
+/* Heartbeat for the equals sign once an equivalence is proven */
+@keyframes eqPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.18);
+  }
+}
+
 /* Breathing "tap me" cue for the empty build bar */
 @keyframes invite {
   0%,

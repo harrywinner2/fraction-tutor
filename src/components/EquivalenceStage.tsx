@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import FractionBar from './FractionBar'
 import type { BarSpec } from '../types'
 
@@ -59,26 +59,23 @@ export default function EquivalenceStage({
       )}
 
       {kind === 'compare' && showEquals && (
-        <motion.div
+        <div
           className="relative flex h-12 w-16 items-center justify-center"
-          animate={lit ? { scale: [1, 1.25, 1] } : { scale: 1 }}
-          transition={{ duration: 0.5, repeat: lit ? Infinity : 0, repeatDelay: 0.6 }}
+          style={lit ? { animation: 'eqPulse 1.1s ease-in-out infinite' } : undefined}
         >
-          <AnimatePresence mode="wait">
-            <motion.span
-              key={lit ? 'eq' : 'q'}
-              initial={{ opacity: 0, rotate: -20, scale: 0.6 }}
-              animate={{ opacity: 1, rotate: 0, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.6 }}
-              className={[
-                'font-display text-5xl font-semibold',
-                lit ? 'text-gold drop-shadow-[0_0_14px_rgba(227,178,60,0.85)]' : 'text-cream/30',
-              ].join(' ')}
-            >
-              {lit ? '=' : '?'}
-            </motion.span>
-          </AnimatePresence>
-        </motion.div>
+          {/* Plain element: opacity is always 1, only colour/scale transition.
+              It can change but it can never vanish. */}
+          <span
+            className={[
+              'font-display text-5xl font-semibold transition-all duration-300',
+              lit
+                ? 'scale-110 text-gold drop-shadow-[0_0_14px_rgba(227,178,60,0.85)]'
+                : 'scale-100 text-cream/30',
+            ].join(' ')}
+          >
+            {lit ? '=' : '?'}
+          </span>
+        </div>
       )}
 
       {bottom && (
@@ -95,10 +92,8 @@ export default function EquivalenceStage({
       )}
 
       {ledger && (
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
+        <div
+          style={{ animation: 'replyInUp 420ms ease-out 300ms both' }}
           className="mt-2 flex flex-col items-center gap-2 rounded-2xl border border-gold/30 bg-gold/5 px-7 py-4 font-display text-2xl font-semibold text-gold-soft tabular-nums"
         >
           <div className="flex items-center gap-3">
@@ -113,7 +108,7 @@ export default function EquivalenceStage({
             <span className="text-cream/40">=</span>
             <span>2/6</span>
           </div>
-        </motion.div>
+        </div>
       )}
     </div>
   )
