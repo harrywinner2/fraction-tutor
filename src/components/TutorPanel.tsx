@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import type { Choice, Mood } from '../types'
 
@@ -98,10 +98,12 @@ export default function TutorPanel({
         </div>
       </div>
 
-      {/* answers */}
+      {/* answers — rendered once the line finishes typing and then left
+          mounted (no AnimatePresence: it has no exit here and only made the
+          buttons flicker out on unrelated re-renders). */}
       <div className="flex flex-col gap-3">
-        <AnimatePresence>
-          {done && choices?.map((c, i) => (
+        {done &&
+          choices?.map((c, i) => (
             <motion.button
               key={`${beatId}-${c.label}`}
               initial={{ opacity: 0, x: -16 }}
@@ -117,18 +119,17 @@ export default function TutorPanel({
             </motion.button>
           ))}
 
-          {done && !choices && continueLabel && (
-            <motion.button
-              key={`${beatId}-continue`}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              onClick={onContinue}
-              className="min-h-[56px] rounded-xl border border-gold/40 bg-gold/15 px-6 py-3 text-[1.02rem] font-semibold text-gold-soft transition-all hover:bg-gold/25 active:scale-[0.98]"
-            >
-              {continueLabel} →
-            </motion.button>
-          )}
-        </AnimatePresence>
+        {done && !choices && continueLabel && (
+          <motion.button
+            key={`${beatId}-continue`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            onClick={onContinue}
+            className="min-h-[56px] rounded-xl border border-gold/40 bg-gold/15 px-6 py-3 text-[1.02rem] font-semibold text-gold-soft transition-all hover:bg-gold/25 active:scale-[0.98]"
+          >
+            {continueLabel} →
+          </motion.button>
+        )}
       </div>
 
       {/* audio controls */}

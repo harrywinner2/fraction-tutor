@@ -76,36 +76,42 @@ export default function FractionBar({
         <AnimatePresence initial={false}>
           {cells.map((i) => {
             const isFilled = i < filled
-            return (
+            const cls = [
+              'relative flex-1 rounded-xl transition-colors duration-300',
+              isFilled
+                ? 'bg-gradient-to-b from-gold-soft to-gold-deep'
+                : 'bg-white/[0.045] ring-1 ring-inset ring-white/10',
+              // In smash mode the parent owns the tap, so the pieces must let
+              // the click pass straight through to it.
+              interactive === 'build' ? 'cursor-pointer' : 'pointer-events-none',
+            ].join(' ')
+            const motionProps = {
+              layout: true,
+              initial: { opacity: 0, scaleX: 0.4 },
+              animate: { opacity: 1, scaleX: 1 },
+              exit: { opacity: 0, scaleX: 0.4 },
+              transition: { type: 'spring' as const, stiffness: 380, damping: 28 },
+              className: cls,
+            }
+            const fill = isFilled && (
+              <span className="pointer-events-none absolute inset-x-0 top-1 mx-auto h-[3px] w-2/3 rounded-full bg-white/35" />
+            )
+            return interactive === 'build' ? (
               <motion.button
                 key={`${segments}-${i}`}
-                layout
-                initial={{ opacity: 0, scaleX: 0.4 }}
-                animate={{ opacity: 1, scaleX: 1 }}
-                exit={{ opacity: 0, scaleX: 0.4 }}
-                transition={{ type: 'spring', stiffness: 380, damping: 28 }}
+                {...motionProps}
                 onClick={(e) => {
                   e.stopPropagation()
                   handleCell(i)
                 }}
-                disabled={interactive !== 'build'}
-                aria-label={
-                  interactive === 'build'
-                    ? `Piece ${i + 1} of ${segments}, ${isFilled ? 'filled' : 'empty'}`
-                    : undefined
-                }
-                className={[
-                  'relative flex-1 rounded-xl transition-colors duration-300',
-                  interactive === 'build' ? 'cursor-pointer' : 'cursor-default',
-                  isFilled
-                    ? 'bg-gradient-to-b from-gold-soft to-gold-deep'
-                    : 'bg-white/[0.045] ring-1 ring-inset ring-white/10',
-                ].join(' ')}
+                aria-label={`Piece ${i + 1} of ${segments}, ${isFilled ? 'filled' : 'empty'}`}
               >
-                {isFilled && (
-                  <span className="pointer-events-none absolute inset-x-0 top-1 mx-auto h-[3px] w-2/3 rounded-full bg-white/35" />
-                )}
+                {fill}
               </motion.button>
+            ) : (
+              <motion.div key={`${segments}-${i}`} {...motionProps} aria-hidden>
+                {fill}
+              </motion.div>
             )
           })}
         </AnimatePresence>
