@@ -34,6 +34,30 @@ body {
   box-sizing: border-box;
 }
 
+/* Answer/continue button entrance. Pure CSS with fill-mode "both" so the
+   final state is always the visible one — immune to the React-StrictMode +
+   Framer remount quirk that left them stuck at opacity 0 in dev. */
+@keyframes replyIn {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes replyInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Breathing "tap me" cue for the empty build bar */
 @keyframes invite {
   0%,

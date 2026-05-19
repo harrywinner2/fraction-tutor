@@ -101,34 +101,31 @@ export default function TutorPanel({
       {/* answers — rendered once the line finishes typing and then left
           mounted (no AnimatePresence: it has no exit here and only made the
           buttons flicker out on unrelated re-renders). */}
-      <div className="flex flex-col gap-3">
+      <div id="reply-options" className="flex flex-col gap-3">
         {done &&
           choices?.map((c, i) => (
-            <motion.button
+            <button
               key={`${beatId}-${c.label}`}
-              initial={{ opacity: 0, x: -16 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.07 }}
+              style={{ animation: 'replyIn 360ms ease-out both', animationDelay: `${i * 70}ms` }}
               onClick={() => onChoose(c.next, c.correct)}
-              className="group min-h-[56px] rounded-xl border border-white/12 bg-white/[0.05] px-5 py-3 text-left text-[1.02rem] font-medium text-cream transition-all hover:border-gold/50 hover:bg-gold/10 active:scale-[0.98]"
+              className="group min-h-[56px] rounded-xl border border-white/12 bg-white/[0.05] px-5 py-3 text-left text-[1.02rem] font-medium text-cream transition-colors hover:border-gold/50 hover:bg-gold/10 active:scale-[0.98]"
             >
               <span className="mr-3 text-gold-soft/70 transition-transform group-hover:translate-x-0.5">
                 →
               </span>
               {c.label}
-            </motion.button>
+            </button>
           ))}
 
         {done && !choices && continueLabel && (
-          <motion.button
+          <button
             key={`${beatId}-continue`}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+            style={{ animation: 'replyInUp 360ms ease-out both' }}
             onClick={onContinue}
-            className="min-h-[56px] rounded-xl border border-gold/40 bg-gold/15 px-6 py-3 text-[1.02rem] font-semibold text-gold-soft transition-all hover:bg-gold/25 active:scale-[0.98]"
+            className="min-h-[56px] rounded-xl border border-gold/40 bg-gold/15 px-6 py-3 text-[1.02rem] font-semibold text-gold-soft transition-colors hover:bg-gold/25 active:scale-[0.98]"
           >
             {continueLabel} →
-          </motion.button>
+          </button>
         )}
       </div>
 
