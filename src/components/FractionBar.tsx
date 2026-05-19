@@ -136,18 +136,22 @@ export default function FractionBar({
         )}
       </motion.div>
 
-      {label && (
-        <div className="flex items-baseline gap-3">
-          <span className="text-sm uppercase tracking-[0.18em] text-cream/55">
+      {/* The fraction is the hero label on every box so a kid always knows
+          "this box is 2/4". Plain text — never animated — so it can't flash
+          out. During smashing the word would contradict the changing number
+          (it's still the same amount), so we let the number speak. */}
+      <div className="flex flex-col items-center gap-0.5">
+        <div className="font-display text-[clamp(1.5rem,4.6vw,2.1rem)] font-semibold leading-none text-gold-soft tabular-nums">
+          {filled}
+          <span className="mx-[3px] text-cream/35">/</span>
+          {segments}
+        </div>
+        {label && interactive !== 'smash' && (
+          <span className="text-xs uppercase tracking-[0.2em] text-cream/55">
             {label}
           </span>
-          <span className="font-display text-2xl font-semibold text-gold-soft tabular-nums">
-            {filled}
-            <span className="mx-[2px] text-cream/40">/</span>
-            {segments}
-          </span>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }
