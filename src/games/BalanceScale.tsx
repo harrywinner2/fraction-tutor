@@ -125,9 +125,13 @@ export default function BalanceScale({ speech, sound, onExit }: Props) {
             <div className="-mt-1 h-3 w-44 rounded-full bg-white/10" />
           </div>
 
-          {/* beam + pans, pivoting on the centre */}
+          {/* beam + pans, pivoting on the centre.
+              No -translate-x-1/2 here: Framer's animated transform replaces the
+              element's whole transform string, which would wipe the Tailwind
+              translate and push the beam off the fulcrum. left-0 + w-full of a
+              centred wrapper does the same centring without that conflict. */}
           <motion.div
-            className="absolute left-1/2 top-[8%] h-2.5 w-full -translate-x-1/2 rounded-full bg-gradient-to-b from-gold-soft to-gold-deep"
+            className="absolute left-0 top-[8%] h-2.5 w-full rounded-full bg-gradient-to-b from-gold-soft to-gold-deep"
             style={{ transformOrigin: '50% 50%' }}
             animate={{ rotate: angle }}
             transition={{ type: 'spring', stiffness: 55, damping: 11 }}
