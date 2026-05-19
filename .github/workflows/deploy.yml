@@ -23,6 +23,11 @@ jobs:
         with:
           node-version: 20
           cache: npm
+      # Turns on Pages (build type: GitHub Actions) on the very first run,
+      # so no manual repo-settings step is ever needed.
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - run: npm ci
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3

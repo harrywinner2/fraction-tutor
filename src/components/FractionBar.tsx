@@ -68,6 +68,9 @@ export default function FractionBar({
             ? 'ring-gold shadow-glow'
             : 'ring-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.45)]',
           interactive === 'smash' ? 'cursor-pointer active:scale-[0.985]' : '',
+          interactive === 'build' && filled === 0
+            ? 'animate-[invite_1.8s_ease-in-out_infinite]'
+            : '',
         ].join(' ')}
       >
         <AnimatePresence initial={false}>
