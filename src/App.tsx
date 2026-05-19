@@ -109,7 +109,7 @@ export default function App() {
     })
     if (beat.gate === 'smash' && beat.gateNext) {
       clearTimer()
-      advanceTimer.current = window.setTimeout(() => goTo(beat.gateNext!), 850)
+      advanceTimer.current = window.setTimeout(() => goTo(beat.gateNext!), 1400)
     }
   }
 
@@ -124,7 +124,8 @@ export default function App() {
       clearTimer()
       if (equal) {
         sound.play('chime')
-        advanceTimer.current = window.setTimeout(() => goTo(beat.gateNext!), 1100)
+        // Hold on the lit "=" so the win lands before the lesson moves on.
+        advanceTimer.current = window.setTimeout(() => goTo(beat.gateNext!), 2600)
       }
     }
   }

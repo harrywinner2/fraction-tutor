@@ -79,7 +79,18 @@ export default function TutorPanel({
     return () => window.clearInterval(id)
   }, [text, beatId])
 
-  const done = shown.length >= text.length
+  // Reveal the answers on a fixed beat-scoped timer, completely independent of
+  // the typewriter. `revealed` only flips back to false when the BEAT changes,
+  // so once the boxes are up they stay up for the whole beat — they can't
+  // vanish on an unrelated re-render.
+  const [revealed, setRevealed] = useState(false)
+  useEffect(() => {
+    setRevealed(false)
+    const id = window.setTimeout(() => setRevealed(true), 550)
+    return () => window.clearTimeout(id)
+  }, [beatId])
+
+  const typed = shown.length >= text.length
 
   return (
     <div className="flex h-full flex-col gap-5">
@@ -93,7 +104,7 @@ export default function TutorPanel({
           </div>
           <p className="text-[1.05rem] leading-relaxed text-cream">
             {shown}
-            {!done && <span className="ml-0.5 inline-block w-2 animate-pulse">▋</span>}
+            {!typed && <span className="ml-0.5 inline-block w-2 animate-pulse">▋</span>}
           </p>
         </div>
       </div>
@@ -102,7 +113,7 @@ export default function TutorPanel({
           mounted (no AnimatePresence: it has no exit here and only made the
           buttons flicker out on unrelated re-renders). */}
       <div id="reply-options" className="flex flex-col gap-3">
-        {done &&
+        {revealed &&
           choices?.map((c, i) => (
             <button
               key={`${beatId}-${c.label}`}
@@ -117,7 +128,7 @@ export default function TutorPanel({
             </button>
           ))}
 
-        {done && !choices && continueLabel && (
+        {revealed && !choices && continueLabel && (
           <button
             key={`${beatId}-continue`}
             style={{ animation: 'replyInUp 360ms ease-out both' }}
