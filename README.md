@@ -1,19 +1,35 @@
 # Slice — a fractions playground
 
-A single, self-contained math lesson that teaches **fraction equivalence**
-(½ = 2/4 = 3/6) to a nine-year-old. A warm scripted tutor talks the student
-through it, and a chocolate-bar manipulative lets them *feel* why two
-different-looking fractions are the same amount.
+A warm, hands-on way for a nine-year-old to *feel* fractions. A game-select
+hub opens onto several fraction games, each built around one direct-manipulation
+gesture and Nova, a scripted voice tutor.
 
 **Live:** https://harrywinner2.github.io/fraction-tutor/
 
 It's built to be played on an iPad in the browser, held sideways, with sound on.
 
+## The games
+
+- **Equivalence Lab** — the deep, polished lesson. Smash a chocolate bar and
+  discover why ½ = 2/4 = 3/6, then prove the rule generalises (1/3 → 2/6).
+  This is the one that completes the brief end-to-end.
+- **Cookie Share** *(prototype)* — fraction as fair-sharing. Cut cookies and
+  drag the pieces so every friend gets the same; the friends smile when it's
+  fair and look glum when they have less than a peer. This is where the
+  share-cookie characters belong — they were built to *receive* cookies, which
+  is meaningless in the bar lesson, so they were moved here.
+- **Balance Scale** *(prototype)* — fraction as weight. Drag fractions onto two
+  pans; the beam tips to the heavier side and balances when they're equal, so
+  comparison and equivalence become physical.
+
+The Equivalence Lab is the complete, demo-ready lesson; Cookie Share and
+Balance Scale are playable prototypes exploring other game dynamics.
+
 ---
 
-## The lesson
+## The Equivalence Lab lesson
 
-The whole thing is one tight arc: **explore → learn → check → generalise → win.**
+The flagship lesson is one tight arc: **explore → learn → check → generalise → win.**
 
 1. **Explore.** The student gets half a chocolate bar and is invited to *smash*
    it. Each smash cuts every piece in two — but the gold part never grows or

@@ -7,13 +7,13 @@ import type { Mood } from '../types'
  * lesson's mood so the student feels cheered on, not tested.
  */
 
-interface Kid {
+export interface Kid {
   skin: string
   hair: string
   hairStyle: 'bun' | 'curls' | 'short' | 'wave'
 }
 
-const KIDS: Kid[] = [
+export const KIDS: Kid[] = [
   { skin: '#E8B98C', hair: '#3A2A1C', hairStyle: 'bun' },
   { skin: '#C98A5E', hair: '#1C1C24', hairStyle: 'curls' },
   { skin: '#F0C9A0', hair: '#6B4A2A', hairStyle: 'wave' },
@@ -36,7 +36,9 @@ function Face({ mood }: { mood: Mood }) {
             ? 'M -7 5 Q 0 10 7 5'
             : mood === 'curious'
               ? 'M -6 6 Q 2 9 7 4'
-              : 'M -6 5 Q 0 8 6 5'
+              : mood === 'sad'
+                ? 'M -7 8 Q 0 1 7 8'
+                : 'M -6 5 Q 0 8 6 5'
 
   return (
     <g>
@@ -55,6 +57,13 @@ function Face({ mood }: { mood: Mood }) {
       {/* curious raised brow */}
       {mood === 'curious' && (
         <path d="M 4 -11 Q 9 -13 14 -10" stroke="#2a2018" strokeWidth="2" fill="none" strokeLinecap="round" />
+      )}
+      {/* sad sloping brows */}
+      {mood === 'sad' && (
+        <>
+          <path d="M -13 -10 Q -9 -8 -5 -9" stroke="#2a2018" strokeWidth="2" fill="none" strokeLinecap="round" />
+          <path d="M 5 -9 Q 9 -8 13 -10" stroke="#2a2018" strokeWidth="2" fill="none" strokeLinecap="round" />
+        </>
       )}
       {/* mouth */}
       {mood === 'surprised' ? (
@@ -111,7 +120,15 @@ function Hair({ style, color }: { style: Kid['hairStyle']; color: string }) {
   }
 }
 
-function Avatar({ kid, mood, index }: { kid: Kid; mood: Mood; index: number }) {
+export function KidAvatar({
+  kid,
+  mood,
+  index = 0,
+}: {
+  kid: Kid
+  mood: Mood
+  index?: number
+}) {
   const cheering = mood === 'cheer'
   return (
     <motion.svg
@@ -169,7 +186,7 @@ export default function Characters({ mood }: { mood: Mood }) {
     <div className="relative flex w-full flex-col items-center">
       <div className="flex items-end justify-center gap-1 sm:gap-3">
         {KIDS.map((kid, i) => (
-          <Avatar key={i} kid={kid} mood={mood} index={i} />
+          <KidAvatar key={i} kid={kid} mood={mood} index={i} />
         ))}
       </div>
       {/* the table / rail they peek over */}

@@ -19,7 +19,14 @@ export interface StageConfig {
   ledger?: boolean
 }
 
-export type Mood = 'idle' | 'happy' | 'curious' | 'surprised' | 'cheer' | 'encourage'
+export type Mood =
+  | 'idle'
+  | 'happy'
+  | 'curious'
+  | 'surprised'
+  | 'cheer'
+  | 'encourage'
+  | 'sad'
 
 export interface Choice {
   label: string
