@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
 import type { useSpeech } from '../hooks/useSpeech'
+import NovaAvatar from './NovaAvatar'
 
 interface Props {
   speech: ReturnType<typeof useSpeech>
@@ -45,17 +45,7 @@ export default function GameShell({ speech, onExit, message, title, children }: 
         </button>
 
         <div className="flex min-w-0 flex-1 items-start gap-3">
-          <motion.div
-            className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gradient-to-br from-gold-soft to-gold-deep shadow-glow"
-            animate={{ scale: speech.speaking ? [1, 1.06, 1] : 1 }}
-            transition={{ duration: 0.5, repeat: speech.speaking ? Infinity : 0 }}
-          >
-            <svg width="26" height="26" viewBox="-16 -16 32 32">
-              <ellipse cx="-6" cy="-2" rx="2.4" ry="2.8" fill="#3a2a14" />
-              <ellipse cx="6" cy="-2" rx="2.4" ry="2.8" fill="#3a2a14" />
-              <path d="M -6 4 Q 0 9 6 4" stroke="#3a2a14" strokeWidth="2" fill="none" strokeLinecap="round" />
-            </svg>
-          </motion.div>
+          <NovaAvatar mood="happy" speaking={speech.speaking} size={44} halo={0.4} />
           <div className="max-w-[46ch] rounded-2xl rounded-tl-sm border border-white/10 bg-white/[0.055] px-4 py-3 backdrop-blur-sm">
             <div className="mb-0.5 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-gold-soft/80">
               {title}

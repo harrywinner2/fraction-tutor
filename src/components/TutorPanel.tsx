@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import type { Choice, Mood } from '../types'
+import NovaAvatar from './NovaAvatar'
 
 interface Props {
   beatId: string
@@ -14,34 +15,6 @@ interface Props {
   onContinue: () => void
   onReplay: () => void
   onToggleMute: () => void
-}
-
-/** Nova — a warm little guide orb whose face follows the lesson mood. */
-function Nova({ mood, speaking }: { mood: Mood; speaking: boolean }) {
-  const smiling = mood === 'cheer' || mood === 'happy' || mood === 'encourage'
-  return (
-    <motion.div
-      className="relative grid h-12 w-12 shrink-0 place-items-center rounded-full bg-gradient-to-br from-gold-soft to-gold-deep shadow-glow"
-      animate={{ scale: speaking ? [1, 1.06, 1] : 1 }}
-      transition={{ duration: 0.5, repeat: speaking ? Infinity : 0 }}
-    >
-      <svg width="30" height="30" viewBox="-16 -16 32 32">
-        <ellipse cx="-6" cy="-2" rx="2.4" ry={mood === 'surprised' ? 3.6 : 2.8} fill="#3a2a14" />
-        <ellipse cx="6" cy="-2" rx="2.4" ry={mood === 'surprised' ? 3.6 : 2.8} fill="#3a2a14" />
-        {mood === 'surprised' ? (
-          <ellipse cx="0" cy="6" rx="3" ry="4" fill="#3a2a14" />
-        ) : (
-          <path
-            d={smiling ? 'M -6 4 Q 0 10 6 4' : 'M -5 5 Q 0 7 5 5'}
-            stroke="#3a2a14"
-            strokeWidth="2"
-            fill="none"
-            strokeLinecap="round"
-          />
-        )}
-      </svg>
-    </motion.div>
-  )
 }
 
 export default function TutorPanel({
@@ -96,7 +69,7 @@ export default function TutorPanel({
     <div className="flex h-full flex-col gap-5">
       {/* message */}
       <div className="flex items-start gap-3">
-        <Nova mood={mood} speaking={speaking} />
+        <NovaAvatar mood={mood} speaking={speaking} size={52} />
         <div className="relative max-w-[34ch] rounded-2xl rounded-tl-sm border border-white/10 bg-white/[0.055] px-5 py-4 backdrop-blur-sm">
           <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-gold-soft/80">
             Nova
