@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "model": "gpt-4o-mini-tts",
+  "voice": "nova",
+  "format": "mp3",
+  "lines": []
+}
