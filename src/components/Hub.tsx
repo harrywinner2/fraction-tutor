@@ -66,59 +66,110 @@ const TILES: Tile[] = [
 ]
 
 export default function Hub({ onPick }: { onPick: (id: GameId) => void }) {
+  const flagship = TILES.find((t) => t.id === 'equivalence')!
+  const sandbox = TILES.filter((t) => t.id !== 'equivalence')
+
   return (
-    <div className="flex h-full w-full flex-col gap-6 px-5 pb-8 pt-10 sm:px-10 lg:flex-row lg:items-center lg:gap-12 lg:px-16">
+    <section className="flex h-full w-full flex-col gap-6 px-5 pb-8 pt-10 sm:px-10 lg:flex-row lg:items-center lg:gap-12 lg:px-16">
       {/* greeting */}
-      <div className="flex shrink-0 flex-col items-start gap-4 lg:w-[320px]">
-        <div className="grid h-14 w-14 place-items-center rounded-full bg-gradient-to-br from-gold-soft to-gold-deep shadow-glow">
+      <header className="flex shrink-0 flex-col items-start gap-4 lg:w-[320px]">
+        <div
+          className="grid h-14 w-14 place-items-center rounded-full bg-gradient-to-br from-gold-soft to-gold-deep"
+          style={{ boxShadow: '0 12px 38px -10px rgba(227,178,60,0.55)' }}
+        >
           <svg width="34" height="34" viewBox="-16 -16 32 32">
             <ellipse cx="-6" cy="-2" rx="2.6" ry="3" fill="#3a2a14" />
             <ellipse cx="6" cy="-2" rx="2.6" ry="3" fill="#3a2a14" />
             <path d="M -6 4 Q 0 10 6 4" stroke="#3a2a14" strokeWidth="2" fill="none" strokeLinecap="round" />
           </svg>
         </div>
-        <h1 className="font-display text-[clamp(2.2rem,6vh,3.2rem)] font-semibold leading-tight text-cream">
-          Fractions
+        <h1 className="h-display font-display text-[clamp(2.4rem,6.4vh,3.6rem)] font-semibold leading-[1.02] text-cream">
+          Fractions, by <em className="not-italic font-display italic text-gold-soft">feel</em>.
         </h1>
-        <p className="max-w-xs text-[1.05rem] leading-relaxed text-cream/65">
-          Hi, I'm <span className="text-gold-soft">Nova</span>. Pick a game and
-          let's play with fractions — there's no wrong way to explore.
+        <p className="max-w-xs text-[1.05rem] leading-relaxed text-cream/65" style={{ textWrap: 'pretty' }}>
+          Hi, I'm <span className="text-gold-soft">Nova</span>. Pick a game and let's play —
+          there's no wrong way to explore.
         </p>
         <p className="text-sm text-cream/35">Best on an iPad, held sideways · sound on 🔊</p>
-      </div>
+      </header>
 
       {/* tiles */}
-      <div className="grid flex-1 grid-cols-2 gap-4 sm:gap-5 lg:max-w-2xl xl:grid-cols-2">
-        {TILES.map((t, i) => (
-          <button
-            key={t.id}
-            disabled={!t.enabled}
-            onClick={() => t.enabled && onPick(t.id as GameId)}
-            style={{ animation: 'replyInUp 420ms ease-out both', animationDelay: `${i * 80}ms` }}
-            className={[
-              'group flex items-center gap-4 rounded-2xl border p-5 text-left transition-all',
-              t.enabled
-                ? 'border-white/12 bg-white/[0.05] hover:border-gold/50 hover:bg-gold/10 active:scale-[0.98]'
-                : 'cursor-not-allowed border-white/8 bg-white/[0.02] opacity-50',
-            ].join(' ')}
+      <div className="flex flex-1 flex-col gap-5 lg:max-w-2xl">
+        {/* Flagship — the complete, polished lesson */}
+        <button
+          onClick={() => onPick(flagship.id as GameId)}
+          style={{ animation: 'replyInUp 420ms ease-out both' }}
+          className="group relative flex items-center gap-5 overflow-hidden rounded-2xl border border-gold/35 bg-gold/[0.07] p-6 text-left transition-all hover:border-gold/60 hover:bg-gold/15 active:scale-[0.99]"
+        >
+          <span
+            className="absolute -right-12 -top-12 h-40 w-40 rounded-full opacity-50 blur-2xl"
+            style={{ background: 'radial-gradient(circle, rgba(227,178,60,0.35), transparent 70%)' }}
+            aria-hidden
+          />
+          <span
+            className="grid h-20 w-20 shrink-0 place-items-center rounded-full border border-gold/45 bg-gold/10 text-gold-soft transition-colors group-hover:bg-gold/20"
+            style={{ boxShadow: '0 14px 30px -14px rgba(227,178,60,0.55)' }}
           >
-            <span
+            {flagship.icon}
+          </span>
+          <span className="relative flex min-w-0 flex-col gap-1.5">
+            <span className="flex items-center gap-2">
+              <span className="rounded-full border border-gold/45 px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-gold-soft">
+                Start here
+              </span>
+              <span className="text-[0.65rem] uppercase tracking-[0.2em] text-cream/40">
+                · the lesson
+              </span>
+            </span>
+            <span className="font-display text-2xl font-semibold text-cream">
+              {flagship.label}
+            </span>
+            <span className="text-sm leading-snug text-cream/65">{flagship.blurb}</span>
+          </span>
+        </button>
+
+        {/* Sandbox — exploratory prototypes */}
+        <div className="flex items-center gap-3 pt-1">
+          <span className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-cream/50">
+            Sandbox
+          </span>
+          <span className="h-px flex-1 bg-cream/10" />
+          <span className="text-[0.65rem] uppercase tracking-[0.18em] text-cream/30">
+            prototypes
+          </span>
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {sandbox.map((t, i) => (
+            <button
+              key={t.id}
+              disabled={!t.enabled}
+              onClick={() => t.enabled && onPick(t.id as GameId)}
+              style={{ animation: 'replyInUp 420ms ease-out both', animationDelay: `${120 + i * 80}ms` }}
               className={[
-                'grid h-16 w-16 shrink-0 place-items-center rounded-full border transition-colors',
+                'group flex flex-col items-start gap-3 rounded-2xl border p-4 text-left transition-all',
                 t.enabled
-                  ? 'border-gold/40 text-gold-soft group-hover:bg-gold/15'
-                  : 'border-white/15 text-cream/40',
+                  ? 'border-white/10 bg-white/[0.035] hover:border-gold/40 hover:bg-gold/[0.06] active:scale-[0.98]'
+                  : 'cursor-not-allowed border-white/8 bg-white/[0.02] opacity-50',
               ].join(' ')}
             >
-              {t.icon}
-            </span>
-            <span className="flex flex-col gap-1">
-              <span className="text-lg font-semibold text-cream">{t.label}</span>
-              <span className="text-sm leading-snug text-cream/55">{t.blurb}</span>
-            </span>
-          </button>
-        ))}
+              <span
+                className={[
+                  'grid h-12 w-12 place-items-center rounded-full border transition-colors',
+                  t.enabled
+                    ? 'border-white/15 text-cream/85 group-hover:border-gold/40 group-hover:text-gold-soft'
+                    : 'border-white/10 text-cream/35',
+                ].join(' ')}
+              >
+                {t.icon}
+              </span>
+              <span className="flex flex-col gap-0.5">
+                <span className="text-base font-semibold text-cream">{t.label}</span>
+                <span className="text-[0.82rem] leading-snug text-cream/55">{t.blurb}</span>
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   )
 }

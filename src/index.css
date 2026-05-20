@@ -16,7 +16,7 @@ body,
 body {
   background: #070b16;
   color: #f5f0e6;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Geist', 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow: hidden;
@@ -78,6 +78,31 @@ body {
   50% {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 0 6px rgba(227, 178, 60, 0.16);
   }
+}
+
+/* Surface texture: a barely-there grain overlay so the dark canvas reads
+   like film instead of plastic. SVG fractal noise, blended in. */
+.grain {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 220px 220px;
+  mix-blend-mode: overlay;
+  opacity: 0.055;
+}
+
+/* Make keyboard focus obvious without forcing it on mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+:focus-visible {
+  outline: 2px solid #ebc76a;
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Display-grade headlines: tighter optical sizing for editorial weight */
+.h-display {
+  letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
 @media (prefers-reduced-motion: reduce) {

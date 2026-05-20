@@ -30,16 +30,19 @@ export default function App() {
   return (
     <div className="relative h-full w-full overflow-hidden bg-space-900 font-sans">
       <Starfield />
-      {screen === 'hub' && <Hub onPick={pick} />}
-      {screen === 'equivalence' && (
-        <EquivalenceLab speech={speech} sound={sound} onExit={toHub} />
-      )}
-      {screen === 'cookies' && (
-        <CookieShare speech={speech} sound={sound} onExit={toHub} />
-      )}
-      {screen === 'balance' && (
-        <BalanceScale speech={speech} sound={sound} onExit={toHub} />
-      )}
+      <div className="pointer-events-none absolute inset-0 grain" aria-hidden />
+      <main className="relative z-10 h-full w-full">
+        {screen === 'hub' && <Hub onPick={pick} />}
+        {screen === 'equivalence' && (
+          <EquivalenceLab speech={speech} sound={sound} onExit={toHub} />
+        )}
+        {screen === 'cookies' && (
+          <CookieShare speech={speech} sound={sound} onExit={toHub} />
+        )}
+        {screen === 'balance' && (
+          <BalanceScale speech={speech} sound={sound} onExit={toHub} />
+        )}
+      </main>
     </div>
   )
 }

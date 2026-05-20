@@ -191,7 +191,7 @@ export default function Characters({ mood }: { mood: Mood }) {
       </div>
       {/* the table / rail they peek over */}
       <div className="-mt-5 h-4 w-[min(680px,82vw)] rounded-full bg-gradient-to-b from-[#3a4566] to-[#222a44]" />
-      <div className="-mt-3 h-3 w-[min(680px,82vw)] rounded-full bg-[#1a2138] shadow-[0_8px_20px_rgba(0,0,0,0.45)]" />
+      <div className="-mt-3 h-3 w-[min(680px,82vw)] rounded-full bg-[#1a2138] shadow-[0_10px_24px_-6px_rgba(7,11,22,0.7)]" />
     </div>
   )
 }

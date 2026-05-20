@@ -69,7 +69,7 @@ export default function FractionBar({
           'bg-[#10162b] ring-1 transition-shadow duration-500',
           glow
             ? 'ring-gold shadow-glow'
-            : 'ring-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.45)]',
+            : 'ring-white/10 shadow-[0_16px_36px_-10px_rgba(7,11,22,0.75)]',
           interactive === 'smash' ? 'cursor-pointer active:scale-[0.985]' : '',
           interactive === 'build' && filled === 0
             ? 'animate-[invite_1.8s_ease-in-out_infinite]'

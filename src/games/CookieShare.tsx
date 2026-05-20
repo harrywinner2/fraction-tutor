@@ -221,7 +221,8 @@ function Cookie({
       className="relative grid h-14 w-14 cursor-grab touch-none place-items-center rounded-full active:cursor-grabbing"
       style={{
         background: 'radial-gradient(circle at 35% 30%, #C98A4E, #8a5a2c 70%, #6b4420)',
-        boxShadow: '0 4px 10px rgba(0,0,0,0.45), inset 0 2px 4px rgba(255,255,255,0.18)',
+        boxShadow:
+          '0 6px 14px -2px rgba(7,11,22,0.7), inset 0 2px 4px rgba(255,255,255,0.22)',
       }}
     >
       {/* choc chips */}
