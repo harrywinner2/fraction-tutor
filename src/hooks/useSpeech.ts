@@ -12,10 +12,15 @@ import { useCallback, useEffect, useRef, useState } from 'react'
  *      new beat, a dynamic game message), we fall back to the browser's
  *      built-in voice so the lesson never goes silent.
  *
- * iPad-Safari realities still shape the API:
- *   - The first sound must happen inside a user gesture: call `prime()` once
- *     on the opening tap to unlock both audio paths.
- *   - SpeechSynthesis voices load asynchronously, so we wait for them.
+ * iPad-Safari realities shape the design here:
+ *   - iOS allows an `<audio>` element to be played outside a user gesture
+ *     *only* if that exact element was successfully `play()`'d inside a
+ *     gesture before. So we keep ONE persistent element and reuse it for every
+ *     line; `prime()` plays a silent clip on it during the opening tap to
+ *     "bless" it for later programmatic playback.
+ *   - SpeechSynthesis also needs a gesture-bound first utterance, hence the
+ *     volume-0 utterance in `prime()`.
+ *   - Voices load asynchronously, so we wait for them.
  */
 
 interface ManifestLine {
@@ -33,9 +38,18 @@ interface Manifest {
 
 const normalize = (text: string): string => text.replace(/\s+/g, ' ').trim()
 
+// 0-sample WAV — 44-byte RIFF header, no audio data. Plays as instant silence,
+// supported by every browser. Used solely to "bless" the persistent <audio>
+// element inside the opening user gesture so later `.src = …; .play()` calls
+// are allowed without a fresh gesture.
+const SILENT_WAV =
+  'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA='
+
 export function useSpeech() {
   const [supported] = useState(
-    () => typeof window !== 'undefined' && ('speechSynthesis' in window || 'Audio' in window),
+    () =>
+      typeof window !== 'undefined' &&
+      ('speechSynthesis' in window || typeof Audio !== 'undefined'),
   )
   const [muted, setMuted] = useState(false)
   const [speaking, setSpeaking] = useState(false)
@@ -44,9 +58,28 @@ export function useSpeech() {
   const mutedRef = useRef(muted)
   mutedRef.current = muted
 
-  const audioRef = useRef<HTMLAudioElement | null>(null)
+  /** One persistent <audio> element, reused for every line. Created lazily on
+   *  the first call to `getAudio()` — typically inside `prime()`. */
+  const audioElRef = useRef<HTMLAudioElement | null>(null)
+  /** Generation counter so a stale clip's load/error doesn't clobber the UI
+   *  state of a newer clip — speak() bumps this and ignores results from any
+   *  request whose token has been superseded. */
+  const reqTokenRef = useRef(0)
+
   const voiceRef = useRef<SpeechSynthesisVoice | null>(null)
   const manifestRef = useRef<Map<string, string> | null>(null)
+
+  const getAudio = (): HTMLAudioElement => {
+    if (!audioElRef.current) {
+      const el = new Audio()
+      el.preload = 'auto'
+      // playsinline avoids iOS Safari sometimes taking over the screen for
+      // <audio> elements that came from a non-gesture path.
+      el.setAttribute('playsinline', '')
+      audioElRef.current = el
+    }
+    return audioElRef.current
+  }
 
   // Fetch the voice manifest once. If it's missing or empty we just fall back
   // to SpeechSynthesis — the lesson is still usable.
@@ -94,13 +127,16 @@ export function useSpeech() {
   }, [])
 
   const cancel = useCallback(() => {
-    if (audioRef.current) {
-      const el = audioRef.current
-      audioRef.current = null
+    // Bump the token so any in-flight load/play for the previous line is
+    // ignored by its handlers below.
+    reqTokenRef.current += 1
+    const el = audioElRef.current
+    if (el) {
       try {
         el.pause()
-        el.removeAttribute('src')
-        el.load()
+        // Don't tear down the src here — we want the element to stay "blessed".
+        // Just reset the playhead.
+        el.currentTime = 0
       } catch {
         /* no-op */
       }
@@ -130,23 +166,40 @@ export function useSpeech() {
 
       const file = manifestRef.current?.get(normalize(text))
       if (file) {
-        const audio = new Audio(file)
-        audio.preload = 'auto'
-        audioRef.current = audio
-        audio.onplay = () => setSpeaking(true)
-        audio.onended = () => {
-          if (audioRef.current === audio) audioRef.current = null
-          setSpeaking(false)
+        const myToken = ++reqTokenRef.current
+        const el = getAudio()
+
+        const isCurrent = () => reqTokenRef.current === myToken
+
+        // Reset handlers + state for this line.
+        el.onplay = () => {
+          if (isCurrent()) setSpeaking(true)
         }
-        audio.onerror = () => {
-          if (audioRef.current === audio) audioRef.current = null
+        el.onended = () => {
+          if (isCurrent()) setSpeaking(false)
+        }
+        el.onerror = () => {
+          if (!isCurrent()) return
           setSpeaking(false)
           synth(text)
         }
-        audio.play().catch(() => {
-          if (audioRef.current === audio) audioRef.current = null
+
+        try {
+          el.muted = false
+          el.src = file
+          el.currentTime = 0
+        } catch {
           synth(text)
-        })
+          return
+        }
+
+        const p = el.play()
+        if (p && typeof p.then === 'function') {
+          p.catch(() => {
+            if (!isCurrent()) return
+            synth(text)
+          })
+        }
         return
       }
 
@@ -155,20 +208,47 @@ export function useSpeech() {
     [supported, cancel, synth],
   )
 
-  /** Unlock both audio paths on the first user gesture (iOS autoplay policy). */
+  /** Unlock both audio paths on the first user gesture (iOS autoplay policy).
+   *  Must run synchronously inside a real tap/click handler. */
   const prime = useCallback(() => {
     if (typeof window === 'undefined') return
+
+    // SpeechSynthesis prime — a zero-volume utterance to unlock the queue.
     if ('speechSynthesis' in window) {
-      const u = new SpeechSynthesisUtterance('')
-      u.volume = 0
-      window.speechSynthesis.speak(u)
+      try {
+        const u = new SpeechSynthesisUtterance('')
+        u.volume = 0
+        window.speechSynthesis.speak(u)
+      } catch {
+        /* no-op */
+      }
     }
-    // Touch an HTMLAudioElement inside the gesture so iOS marks Audio() as unlocked.
+
+    // HTMLAudio prime — get-or-create the persistent element and play a
+    // silent WAV on it. Once this play() succeeds (or even just gets dispatched
+    // inside a gesture), iOS will let us call play() on this element again
+    // outside a gesture, simply by swapping .src.
     try {
-      const a = new Audio()
-      a.muted = true
-      const p = a.play()
-      if (p && typeof p.then === 'function') p.catch(() => {})
+      const el = getAudio()
+      // Stash the eventual real src target; for priming we use SILENT_WAV.
+      el.muted = true
+      el.src = SILENT_WAV
+      const p = el.play()
+      if (p && typeof p.then === 'function') {
+        p.then(() => {
+          try {
+            el.pause()
+            el.currentTime = 0
+          } catch {
+            /* no-op */
+          }
+          el.muted = false
+        }).catch(() => {
+          el.muted = false
+        })
+      } else {
+        el.muted = false
+      }
     } catch {
       /* no-op */
     }
@@ -186,7 +266,8 @@ export function useSpeech() {
     supported,
     muted,
     speaking,
-    /** True iff the OpenAI-rendered voice manifest is loaded — UI uses this to hide the "tap to hear Nova" hint when we don't have a real voice yet. */
+    /** True iff the OpenAI-rendered voice manifest is loaded — UI uses this to
+     *  decide whether to advertise "warm Nova voice" affordances. */
     usingCachedVoice,
     speak,
     cancel,
