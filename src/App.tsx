@@ -6,6 +6,9 @@ import Hub, { type GameId } from './components/Hub'
 import EquivalenceLab from './games/EquivalenceLab'
 import CookieShare from './games/CookieShare'
 import BalanceScale from './games/BalanceScale'
+import PourIn from './games/PourIn'
+import PourOut from './games/PourOut'
+import CakeSlice from './games/CakeSlice'
 
 /**
  * The shell. One starfield, one set of audio hooks, and a tiny router between
@@ -42,6 +45,9 @@ export default function App() {
         {screen === 'balance' && (
           <BalanceScale speech={speech} sound={sound} onExit={toHub} />
         )}
+        {screen === 'pourin' && <PourIn speech={speech} sound={sound} onExit={toHub} />}
+        {screen === 'pourout' && <PourOut speech={speech} sound={sound} onExit={toHub} />}
+        {screen === 'cake' && <CakeSlice speech={speech} sound={sound} onExit={toHub} />}
       </main>
     </div>
   )

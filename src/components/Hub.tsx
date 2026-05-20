@@ -1,4 +1,6 @@
-export type GameId = 'equivalence' | 'cookies' | 'balance'
+import NovaAvatar from './NovaAvatar'
+
+export type GameId = 'equivalence' | 'cookies' | 'balance' | 'pourin' | 'pourout' | 'cake'
 
 interface Tile {
   id: GameId | 'locked'
@@ -52,14 +54,41 @@ const TILES: Tile[] = [
     ),
   },
   {
-    id: 'locked',
-    label: 'More soon',
-    blurb: 'Number line · pour · merge — coming next',
-    enabled: false,
+    id: 'pourin',
+    label: 'Fill the Glass',
+    blurb: 'Tap and hold the tap — stop at the target fraction',
+    enabled: true,
     icon: (
-      <svg viewBox="0 0 48 48" className="h-9 w-9" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round">
-        <rect x="13" y="22" width="22" height="16" rx="3" />
-        <path d="M18 22v-5a6 6 0 0 1 12 0v5" />
+      <svg viewBox="0 0 48 48" className="h-9 w-9" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 10h20l-3 30H17z" />
+        <path d="M14 28h20" />
+        <path d="M24 4v4M22 6h4" />
+      </svg>
+    ),
+  },
+  {
+    id: 'pourout',
+    label: 'Tilt to Pour',
+    blurb: 'Tilt the iPad — leave the target amount in the glass',
+    enabled: true,
+    icon: (
+      <svg viewBox="0 0 48 48" className="h-9 w-9" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M11 14l16-4 3 28-16 4z" />
+        <path d="M11 24l18-4" />
+        <path d="M34 18l6-4M38 26l6-2" />
+      </svg>
+    ),
+  },
+  {
+    id: 'cake',
+    label: 'Slice the Cake',
+    blurb: 'Swipe to cut — match the fraction exactly',
+    enabled: true,
+    icon: (
+      <svg viewBox="0 0 48 48" className="h-9 w-9" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="24" cy="24" r="16" />
+        <path d="M24 8L33 33" />
+        <path d="M24 24l9 9" />
       </svg>
     ),
   },
@@ -73,16 +102,7 @@ export default function Hub({ onPick }: { onPick: (id: GameId) => void }) {
     <section className="flex h-full w-full flex-col gap-6 px-5 pb-8 pt-10 sm:px-10 lg:flex-row lg:items-center lg:gap-12 lg:px-16">
       {/* greeting */}
       <header className="flex shrink-0 flex-col items-start gap-4 lg:w-[320px]">
-        <div
-          className="grid h-14 w-14 place-items-center rounded-full bg-gradient-to-br from-gold-soft to-gold-deep"
-          style={{ boxShadow: '0 12px 38px -10px rgba(227,178,60,0.55)' }}
-        >
-          <svg width="34" height="34" viewBox="-16 -16 32 32">
-            <ellipse cx="-6" cy="-2" rx="2.6" ry="3" fill="#3a2a14" />
-            <ellipse cx="6" cy="-2" rx="2.6" ry="3" fill="#3a2a14" />
-            <path d="M -6 4 Q 0 10 6 4" stroke="#3a2a14" strokeWidth="2" fill="none" strokeLinecap="round" />
-          </svg>
-        </div>
+        <NovaAvatar mood="happy" speaking={false} size={60} halo={0.55} />
         <h1 className="h-display font-display text-[clamp(2.4rem,6.4vh,3.6rem)] font-semibold leading-[1.02] text-cream">
           Fractions, by <em className="not-italic font-display italic text-gold-soft">feel</em>.
         </h1>

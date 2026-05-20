@@ -15,15 +15,24 @@ It's built to be played on an iPad in the browser, held sideways, with sound on.
   This is the one that completes the brief end-to-end.
 - **Cookie Share** *(prototype)* — fraction as fair-sharing. Cut cookies and
   drag the pieces so every friend gets the same; the friends smile when it's
-  fair and look glum when they have less than a peer. This is where the
-  share-cookie characters belong — they were built to *receive* cookies, which
-  is meaningless in the bar lesson, so they were moved here.
+  fair and look glum when they have less than a peer.
 - **Balance Scale** *(prototype)* — fraction as weight. Drag fractions onto two
   pans; the beam tips to the heavier side and balances when they're equal, so
   comparison and equivalence become physical.
+- **Fill the Glass** *(iPad-touch)* — tap-and-hold the faucet to pour water
+  into a glass. Release at the target line. Teaches fraction as a *stopping
+  point* on a continuous quantity — the missing intuition between cookies and
+  the number line.
+- **Tilt to Pour** *(iPad-tilt)* — start with a full glass and use the iPad's
+  accelerometer to pour water out. Stop tilting when the level meets the
+  target. Teaches the inverse: the fraction that *remains*. (Falls back to a
+  drag-slider on devices without orientation events.)
+- **Slice the Cake** *(iPad-swipe)* — draw a straight cut across a round cake
+  with one finger. The chord-segment area is graded against the target
+  fraction. Fractions as a *choice of cut*, not a count of pre-made pieces.
 
-The Equivalence Lab is the complete, demo-ready lesson; Cookie Share and
-Balance Scale are playable prototypes exploring other game dynamics.
+The Equivalence Lab is the complete demo-ready lesson; the rest are playable
+prototypes exploring other game dynamics.
 
 ---
 
@@ -64,6 +73,34 @@ npm run build    # type-check + production build to dist/
 npm run preview  # serve the production build
 ```
 
+### Pre-rendering Nova's voice (OpenAI TTS)
+
+Nova falls back to the browser's `SpeechSynthesis` voice, which is jarringly
+robotic on iPad. To ship a warm tutor voice, pre-render every conversation
+line with OpenAI's text-to-speech once at build time:
+
+```bash
+OPENAI_API_KEY=sk-... npm run voice
+```
+
+The script walks `src/lesson/script.ts` and `src/voice/extras.json`, hits the
+TTS endpoint (`gpt-4o-mini-tts` with voice `nova` by default), and writes mp3s
+to `public/voice/` plus a `manifest.json` mapping each text to its audio file.
+Re-runs are incremental — only new or changed lines are regenerated.
+
+At runtime, `useSpeech` plays the cached clip when one matches; anything
+without a clip (a brand-new beat, a dynamic message) falls back to the
+browser voice so the lesson is never silent.
+
+Useful env overrides:
+
+| Var                  | Default            | Notes                                       |
+| -------------------- | ------------------ | ------------------------------------------- |
+| `OPENAI_TTS_MODEL`   | `gpt-4o-mini-tts`  | Use `tts-1-hd` for the older high-quality model. |
+| `OPENAI_TTS_VOICE`   | `nova`             | Try `shimmer`, `alloy`, `coral`, `verse`.   |
+| `OPENAI_TTS_FORMAT`  | `mp3`              | `opus` is smaller; `wav` is uncompressed.   |
+
+
 ## Technical approach
 
 - **Vite + React + TypeScript** — a static single-page app, no backend, so it
@@ -76,26 +113,39 @@ npm run preview  # serve the production build
   be *smashed* (every piece splits, the amount is conserved) or *built* (tap to
   fill). Equivalence is detected with exact integer cross-multiplication —
   never floating point — so `1·4 === 2·2` lights the equals sign.
-- **Warmth is engineered.** The tutor reads every line aloud via the browser
-  SpeechSynthesis API (primed on the opening tap for iOS), faces react to the
-  lesson mood, and every touch has a synthesised sound — no audio assets to
-  ship or wait on.
+- **Warmth is engineered.** Nova reads every line aloud — the *good* path uses
+  pre-rendered OpenAI TTS clips (warm, expressive, on-brand) and the *fallback*
+  path uses the browser's `SpeechSynthesis` so the lesson is never silent on
+  a fresh checkout. Faces react to the lesson mood; every touch has a
+  synthesised sound.
 - **Motion** is Framer Motion: the smash shudder, the pieces springing apart,
   the equals sign igniting, the confetti.
 
 ```
 src/
-  App.tsx                 orchestrator: beat machine, gates, audio
-  lesson/script.ts        the entire lesson as data
+  App.tsx                 orchestrator: game-select hub + per-game routing
+  lesson/script.ts        the entire equivalence lesson as data
+  voice/extras.json       static lines that aren't beats (game intros etc.)
+  games/
+    EquivalenceLab.tsx    the scripted chocolate-bar lesson
+    CookieShare.tsx       fair-share-the-cookies prototype
+    BalanceScale.tsx      drag-to-balance prototype
+    PourIn.tsx            tap-and-hold to fill (iPad touch)
+    PourOut.tsx           tilt the device to drain (iPad accelerometer)
+    CakeSlice.tsx         swipe to slice (chord-area scoring)
   components/
-    FractionBar.tsx       the manipulative (smash + build)
-    EquivalenceStage.tsx  two bars + the igniting equals sign
-    TutorPanel.tsx        Nova, the message, the answers, audio controls
-    Characters.tsx        the crowd that reacts
-    Starfield / StartScreen / PauseMenu / Celebration
+    Hub.tsx               the game-select screen
+    NovaAvatar.tsx        the shared tutor face — blink, breathe, mouth-sync
+    FractionBar.tsx       the smash/build chocolate-bar manipulative
+    GameShell.tsx         shared back + Nova chrome around each prototype
+    Characters.tsx        the crowd that reacts (Cookie Share)
+    Starfield / PauseMenu / Celebration
   hooks/
-    useSpeech.ts          read-aloud, iOS-safe
+    useSpeech.ts          cached-MP3-first, SpeechSynthesis-fallback
     useSound.ts           synthesised tactile audio
+scripts/
+  generate-voice.mjs      build script: TTS → public/voice/*.mp3 + manifest
+public/voice/             pre-rendered Nova voice clips + manifest.json
 ```
 
 ## iPad roadmap
