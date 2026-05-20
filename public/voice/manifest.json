@@ -3,5 +3,171 @@
   "model": "gpt-4o-mini-tts",
   "voice": "nova",
   "format": "mp3",
-  "lines": []
+  "lines": [
+    {
+      "id": "9d81fec4bc956ee4",
+      "file": "voice/9d81fec4bc956ee4.mp3",
+      "text": "Hi! I'm Nova. We're going to play with a chocolate bar and find something a little bit magic hiding inside it. Ready?"
+    },
+    {
+      "id": "2014e012f4fc242b",
+      "file": "voice/2014e012f4fc242b.mp3",
+      "text": "We'll cut a chocolate bar into pieces and find out when two different fractions are secretly the exact same size. It's quick, and it's pretty cool. Want to try?"
+    },
+    {
+      "id": "4f1d48f8970f9fa9",
+      "file": "voice/4f1d48f8970f9fa9.mp3",
+      "text": "This is half a chocolate bar — one piece out of two. Give it a tap to smash it into smaller pieces. Go on, try it!"
+    },
+    {
+      "id": "f35539df74f4e3f9",
+      "file": "voice/f35539df74f4e3f9.mp3",
+      "text": "Whoa! You cut it into more pieces — but look closely: the chocolate part didn't get any bigger or smaller. Same amount, just smaller cuts. Smash it again if you like, then tap Continue."
+    },
+    {
+      "id": "4f60bd7bc5a3768d",
+      "file": "voice/4f60bd7bc5a3768d.mp3",
+      "text": "Here's the secret. When you cut it more, the number changes but the amount stays exactly the same. One half and two quarters are the same size. Fractions like that have a name: equivalent."
+    },
+    {
+      "id": "a25387b01878f0df",
+      "file": "voice/a25387b01878f0df.mp3",
+      "text": "Look at where the gold ends. The top bar — one half. The bottom bar — two quarters. They stop at the exact same line. Same amount of chocolate. That is what equivalent means."
+    },
+    {
+      "id": "65563991f031e42a",
+      "file": "voice/65563991f031e42a.mp3",
+      "text": "Your turn! Make the bottom bar show the same amount as the half on top. Tap a quarter to fill it in — one at a time — and watch what happens."
+    },
+    {
+      "id": "b52c517c44b04d49",
+      "file": "voice/b52c517c44b04d49.mp3",
+      "text": "Yes! Two quarters fills exactly the same as one half. They are equivalent — and you just built it yourself."
+    },
+    {
+      "id": "5f705c006586104f",
+      "file": "voice/5f705c006586104f.mp3",
+      "text": "Quick question. Which one of these is the same amount as one half?"
+    },
+    {
+      "id": "65f7f63af2dbf9ef",
+      "file": "voice/65f7f63af2dbf9ef.mp3",
+      "text": "Ooh, not quite — and that's okay, look with me. One out of three only reaches up to here. One half reaches further. That's less chocolate, so it can't be the same. Try another one!"
+    },
+    {
+      "id": "c0916924cbc20d31",
+      "file": "voice/c0916924cbc20d31.mp3",
+      "text": "So close! Three out of four reaches past the half line — that's more chocolate than one half. We want exactly the same amount. Give it another go!"
+    },
+    {
+      "id": "35fbd28613ce3123",
+      "file": "voice/35fbd28613ce3123.mp3",
+      "text": "Exactly right! Two out of four is the same as one half. You really get this now."
+    },
+    {
+      "id": "6517c2a64a099a45",
+      "file": "voice/6517c2a64a099a45.mp3",
+      "text": "True or false? Three out of six is also the same as one half. Look at the bars and decide."
+    },
+    {
+      "id": "058b8ae21e47999a",
+      "file": "voice/058b8ae21e47999a.mp3",
+      "text": "Take one more look. Three out of six fills the bar right up to the same line as one half. So it really is the same amount. Want to call it again?"
+    },
+    {
+      "id": "09c967bdc18c5e6f",
+      "file": "voice/09c967bdc18c5e6f.mp3",
+      "text": "One big question. We did all that with halves. Does the same trick work for other fractions too? Here's one third — give it a smash and let's see."
+    },
+    {
+      "id": "129fe526b8f384d6",
+      "file": "voice/129fe526b8f384d6.mp3",
+      "text": "Look at that! One third turned into two sixths — and the chocolate is still exactly the same amount. The trick is not just for halves. It works for every fraction."
+    },
+    {
+      "id": "7633757b22ea6563",
+      "file": "voice/7633757b22ea6563.mp3",
+      "text": "So tell me — is one third the same amount as two sixths? Check the bars."
+    },
+    {
+      "id": "8092bd51ff4c3c50",
+      "file": "voice/8092bd51ff4c3c50.mp3",
+      "text": "Peek at the bars — the gold ends at the very same line for both. So one third and two sixths really are the same amount. Want to call it again?"
+    },
+    {
+      "id": "0b701192aa8fa881",
+      "file": "voice/0b701192aa8fa881.mp3",
+      "text": "You did it! One half is two quarters is three sixths. One third is two sixths. Cut every piece into more pieces and the amount never changes — and that works for any fraction. You did not just learn a fact, you found the rule. Awesome work."
+    },
+    {
+      "id": "212f28f0042f8557",
+      "file": "voice/212f28f0042f8557.mp3",
+      "text": "Tap the menu to choose a game."
+    },
+    {
+      "id": "123ec5cd56a294ed",
+      "file": "voice/123ec5cd56a294ed.mp3",
+      "text": "Hold the tap to pour water into the glass. Stop at the line!"
+    },
+    {
+      "id": "f5f3669ebf1c386f",
+      "file": "voice/f5f3669ebf1c386f.mp3",
+      "text": "Almost — that's a little under. Try again."
+    },
+    {
+      "id": "98b0a05b213891ec",
+      "file": "voice/98b0a05b213891ec.mp3",
+      "text": "Whoa, that's over the line. Have another go."
+    },
+    {
+      "id": "f5bd98f49e5dd50e",
+      "file": "voice/f5bd98f49e5dd50e.mp3",
+      "text": "Perfect! That's exactly where we wanted it."
+    },
+    {
+      "id": "818659c0d8cdf5a6",
+      "file": "voice/818659c0d8cdf5a6.mp3",
+      "text": "Tilt the iPad to pour the water out. Tilt it back when you reach the line."
+    },
+    {
+      "id": "b885af1408670bf4",
+      "file": "voice/b885af1408670bf4.mp3",
+      "text": "Touch the button to let me listen for the tilt."
+    },
+    {
+      "id": "4cdd8c95a6858498",
+      "file": "voice/4cdd8c95a6858498.mp3",
+      "text": "Swipe across the cake to slice it. Aim to cut off the target fraction."
+    },
+    {
+      "id": "03d42a2d6ed4b574",
+      "file": "voice/03d42a2d6ed4b574.mp3",
+      "text": "Nice swipe! Now check the slice."
+    },
+    {
+      "id": "76a3f6e509962ce2",
+      "file": "voice/76a3f6e509962ce2.mp3",
+      "text": "Hmm, that piece is a little too small. Slice again?"
+    },
+    {
+      "id": "9a2de528ad70191f",
+      "file": "voice/9a2de528ad70191f.mp3",
+      "text": "That piece is a little too big. Slice again?"
+    },
+    {
+      "id": "624123debc4ec104",
+      "file": "voice/624123debc4ec104.mp3",
+      "text": "You sliced it exactly right. Beautiful work."
+    },
+    {
+      "id": "3f2ee94fff24900b",
+      "file": "voice/3f2ee94fff24900b.mp3",
+      "text": "Ready for the next one?"
+    },
+    {
+      "id": "91205037c031621d",
+      "file": "voice/91205037c031621d.mp3",
+      "text": "Tap anywhere to begin."
+    }
+  ]
 }
