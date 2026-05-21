@@ -137,6 +137,7 @@ export function useSpeech() {
       manifestRef.current = map
       setUsingCachedVoice(map.size > 0)
       setLoadProgress({ loaded: 0, total: urls.length })
+      console.debug('[speech] manifest ready', { lines: map.size, clips: urls.length })
 
       // Parallel prefetch with a small concurrency cap — Safari hates dozens
       // of parallel audio fetches, but 8 is comfortably fast on a phone tether.
@@ -226,10 +227,21 @@ export function useSpeech() {
 
   const speak = useCallback(
     (text: string) => {
-      if (!supported || mutedRef.current || !text) return
+      if (!supported || mutedRef.current || !text) {
+        console.debug('[speech] skip', { supported, muted: mutedRef.current, hasText: !!text })
+        return
+      }
       cancel()
 
-      const file = manifestRef.current?.get(normalize(text))
+      const norm = normalize(text)
+      const file = manifestRef.current?.get(norm)
+      console.debug('[speech] speak', {
+        textPreview: text.slice(0, 60),
+        manifestSize: manifestRef.current?.size ?? 0,
+        cached: !!file,
+        file,
+      })
+
       if (file) {
         const myToken = ++reqTokenRef.current
         const el = getAudio()
@@ -245,23 +257,27 @@ export function useSpeech() {
         }
         el.onerror = () => {
           if (!isCurrent()) return
+          console.warn('[speech] <audio> error, falling back to synth', { file, error: el.error })
           setSpeaking(false)
           synth(text)
         }
 
         try {
           el.muted = false
+          el.volume = 1
           el.src = file
           el.currentTime = 0
-        } catch {
+        } catch (err) {
+          console.warn('[speech] src/currentTime threw, falling back to synth', err)
           synth(text)
           return
         }
 
         const p = el.play()
         if (p && typeof p.then === 'function') {
-          p.catch(() => {
+          p.then(() => console.debug('[speech] play resolved', { file })).catch((err) => {
             if (!isCurrent()) return
+            console.warn('[speech] play() rejected, falling back to synth', err)
             synth(text)
           })
         }
@@ -277,6 +293,7 @@ export function useSpeech() {
    *  Must run synchronously inside a real tap/click handler. */
   const prime = useCallback(() => {
     if (typeof window === 'undefined') return
+    console.debug('[speech] prime', { manifestSize: manifestRef.current?.size ?? 0 })
 
     // SpeechSynthesis prime — a zero-volume utterance to unlock the queue.
     if ('speechSynthesis' in window) {
@@ -289,18 +306,20 @@ export function useSpeech() {
       }
     }
 
-    // HTMLAudio prime — get-or-create the persistent element and play a
-    // silent WAV on it. Once this play() succeeds (or even just gets dispatched
-    // inside a gesture), iOS will let us call play() on this element again
-    // outside a gesture, simply by swapping .src.
+    // HTMLAudio prime — bless the persistent element with a real cached MP3
+    // (more reliable than a data-URI WAV on iOS Safari). Falls back to the
+    // tiny silent WAV if the manifest didn't load.
     try {
       const el = getAudio()
-      // Stash the eventual real src target; for priming we use SILENT_WAV.
+      const blessUrl =
+        (manifestRef.current && manifestRef.current.values().next().value) || SILENT_WAV
       el.muted = true
-      el.src = SILENT_WAV
+      el.volume = 1
+      el.src = blessUrl
       const p = el.play()
       if (p && typeof p.then === 'function') {
         p.then(() => {
+          console.debug('[speech] prime <audio> blessed', { blessUrl })
           try {
             el.pause()
             el.currentTime = 0
@@ -308,14 +327,15 @@ export function useSpeech() {
             /* no-op */
           }
           el.muted = false
-        }).catch(() => {
+        }).catch((err) => {
+          console.warn('[speech] prime play() rejected', err)
           el.muted = false
         })
       } else {
         el.muted = false
       }
-    } catch {
-      /* no-op */
+    } catch (err) {
+      console.warn('[speech] prime threw', err)
     }
   }, [])
 
