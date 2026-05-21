@@ -137,7 +137,7 @@ export function useSpeech() {
       manifestRef.current = map
       setUsingCachedVoice(map.size > 0)
       setLoadProgress({ loaded: 0, total: urls.length })
-      console.debug('[speech] manifest ready', { lines: map.size, clips: urls.length })
+      console.log('[speech] manifest ready', { lines: map.size, clips: urls.length })
 
       // Parallel prefetch with a small concurrency cap — Safari hates dozens
       // of parallel audio fetches, but 8 is comfortably fast on a phone tether.
@@ -228,14 +228,14 @@ export function useSpeech() {
   const speak = useCallback(
     (text: string) => {
       if (!supported || mutedRef.current || !text) {
-        console.debug('[speech] skip', { supported, muted: mutedRef.current, hasText: !!text })
+        console.log('[speech] skip', { supported, muted: mutedRef.current, hasText: !!text })
         return
       }
       cancel()
 
       const norm = normalize(text)
       const file = manifestRef.current?.get(norm)
-      console.debug('[speech] speak', {
+      console.log('[speech] speak', {
         textPreview: text.slice(0, 60),
         manifestSize: manifestRef.current?.size ?? 0,
         cached: !!file,
@@ -275,7 +275,7 @@ export function useSpeech() {
 
         const p = el.play()
         if (p && typeof p.then === 'function') {
-          p.then(() => console.debug('[speech] play resolved', { file })).catch((err) => {
+          p.then(() => console.log('[speech] play resolved', { file })).catch((err) => {
             if (!isCurrent()) return
             console.warn('[speech] play() rejected, falling back to synth', err)
             synth(text)
@@ -293,7 +293,7 @@ export function useSpeech() {
    *  Must run synchronously inside a real tap/click handler. */
   const prime = useCallback(() => {
     if (typeof window === 'undefined') return
-    console.debug('[speech] prime', { manifestSize: manifestRef.current?.size ?? 0 })
+    console.log('[speech] prime', { manifestSize: manifestRef.current?.size ?? 0 })
 
     // SpeechSynthesis prime — a zero-volume utterance to unlock the queue.
     if ('speechSynthesis' in window) {
@@ -319,7 +319,7 @@ export function useSpeech() {
       const p = el.play()
       if (p && typeof p.then === 'function') {
         p.then(() => {
-          console.debug('[speech] prime <audio> blessed', { blessUrl })
+          console.log('[speech] prime <audio> blessed', { blessUrl })
           try {
             el.pause()
             el.currentTime = 0
