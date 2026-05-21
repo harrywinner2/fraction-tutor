@@ -3,7 +3,7 @@ import type { useSpeech } from '../hooks/useSpeech'
 import type { useSound } from '../hooks/useSound'
 import GameShell from '../components/GameShell'
 import Celebration from '../components/Celebration'
-import { frac, label, toNum, type Frac } from '../lib/frac'
+import { frac, label, spokenLabel, toNum, type Frac } from '../lib/frac'
 
 /**
  * Fill the Glass — a tap-and-hold game built for iPad.
@@ -23,13 +23,14 @@ interface Props {
   speech: ReturnType<typeof useSpeech>
   sound: ReturnType<typeof useSound>
   onExit: () => void
+  onRoundCleared?: (round: number, total: number) => void
 }
 
 const LEVELS: Frac[] = [frac(1, 2), frac(3, 4), frac(1, 3), frac(2, 3), frac(1, 4)]
 const TOLERANCE = 0.045 // ±4.5 % of full — generous for chunky finger releases
 const FILL_PER_SEC = 0.32 // a full glass takes ≈3.1 seconds
 
-export default function PourIn({ speech, sound, onExit }: Props) {
+export default function PourIn({ speech, sound, onExit, onRoundCleared }: Props) {
   const [round, setRound] = useState(0)
   const [level, setLevel] = useState(0)
   const [pouring, setPouring] = useState(false)
@@ -96,6 +97,7 @@ export default function PourIn({ speech, sound, onExit }: Props) {
           sound.play('chime')
           sound.play('win')
           setFireKey((k) => k + 1)
+          onRoundCleared?.(round, LEVELS.length)
         } else if (diff > 0) {
           setResult('over')
           sound.play('pop')
@@ -121,15 +123,15 @@ export default function PourIn({ speech, sound, onExit }: Props) {
   const message =
     result === 'good'
       ? round + 1 < LEVELS.length
-        ? `That's exactly ${label(target)} of a glass. Beautiful. Ready for the next?`
+        ? `That's exactly ${spokenLabel(target)} of a glass. Beautiful. Ready for the next?`
         : `You poured every single one. You really feel the fractions now.`
       : result === 'over'
-        ? `A little too much for ${label(target)}. Tap empty and have another go.`
+        ? `A little too much for ${spokenLabel(target)}. Tap empty and have another go.`
         : result === 'under'
-          ? `Just under ${label(target)}. Tap empty and try again.`
+          ? `Just under ${spokenLabel(target)}. Tap empty and try again.`
           : pouring
-            ? `Stop at ${label(target)}…`
-            : `Press and hold the tap. Fill the glass to ${label(target)}.`
+            ? `Stop at ${spokenLabel(target)}…`
+            : `Press and hold the button below. Pour the glass up to ${spokenLabel(target)}.`
 
   // Geometry — viewBox numbers chosen so the visuals stay nice at any height.
   const GX = 30
@@ -286,7 +288,7 @@ export default function PourIn({ speech, sound, onExit }: Props) {
             ].join(' ')}
             style={{ touchAction: 'none' }}
           >
-            {pouring ? '💧  Pouring — let go at the line' : '💧  Press & hold the tap'}
+            {pouring ? '💧  Pouring — let go at the line' : '💧  Press & hold here to pour'}
           </button>
 
           <div className="flex items-center gap-3">

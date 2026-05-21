@@ -6,12 +6,13 @@ import type { Mood } from '../types'
 import { KIDS, KidAvatar } from '../components/Characters'
 import GameShell from '../components/GameShell'
 import Celebration from '../components/Celebration'
-import { add, cmp, eq, frac, half, isZero, label, type Frac } from '../lib/frac'
+import { add, cmp, eq, frac, half, isZero, label, spokenLabel, type Frac } from '../lib/frac'
 
 interface Props {
   speech: ReturnType<typeof useSpeech>
   sound: ReturnType<typeof useSound>
   onExit: () => void
+  onRoundCleared?: (round: number, total: number) => void
 }
 
 interface Chip {
@@ -25,7 +26,7 @@ const ROUNDS = [
   { kids: 4, cookies: 3 }, // each friend = 3/4
 ]
 
-export default function CookieShare({ speech, sound, onExit }: Props) {
+export default function CookieShare({ speech, sound, onExit, onRoundCleared }: Props) {
   const [round, setRound] = useState(0)
   const [chips, setChips] = useState<Chip[]>([])
   const [won, setWon] = useState(false)
@@ -64,14 +65,15 @@ export default function CookieShare({ speech, sound, onExit }: Props) {
       sound.play('win')
       sound.play('chime')
       setFireKey((k) => k + 1)
+      onRoundCleared?.(round, ROUNDS.length)
     }
-  }, [fair, won, sound])
+  }, [fair, won, sound, round, onRoundCleared])
 
   // Nova's line, derived from the state of play.
   const message = won
     ? round + 1 < ROUNDS.length
-      ? `Perfect — ${cfg.cookies} cookies shared between ${cfg.kids} friends, so everyone gets ${label(target)} of a cookie. Ready for a tougher one?`
-      : `You did it! ${cfg.cookies} cookies between ${cfg.kids} friends is ${label(target)} each. Sharing fairly IS a fraction. Brilliant.`
+      ? `Perfect — ${cfg.cookies} cookies shared between ${cfg.kids} friends, so everyone gets ${spokenLabel(target)} of a cookie. Ready for a tougher one?`
+      : `You did it! ${cfg.cookies} cookies between ${cfg.kids} friends is ${spokenLabel(target)} each. Sharing fairly IS a fraction. Brilliant.`
     : allAssigned
       ? "Close! Someone has more than the others. Every friend needs the exact same amount — tap a piece to send it back and try again."
       : `Share ${cfg.cookies} cookies fairly between ${cfg.kids} friends. Tap a cookie to cut it in half, then drag the pieces so everyone gets the same.`

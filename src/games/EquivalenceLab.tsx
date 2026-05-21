@@ -15,6 +15,7 @@ interface Props {
   speech: ReturnType<typeof useSpeech>
   sound: ReturnType<typeof useSound>
   onExit: () => void
+  onLessonComplete?: () => void
 }
 
 const PHASES = ['Explore', 'Learn', 'Check', 'Done'] as const
@@ -31,7 +32,7 @@ const phaseOf = (id: string): number => {
  * was designed to receive cookies, which has no meaning in this interaction.
  * The warmth here is Nova's voice and the manipulative itself.
  */
-export default function EquivalenceLab({ speech, sound, onExit }: Props) {
+export default function EquivalenceLab({ speech, sound, onExit, onLessonComplete }: Props) {
   const [beatId, setBeatId] = useState(FIRST_BEAT)
   const [paused, setPaused] = useState(false)
   const [live, setLive] = useState<LiveBar | null>(null)
@@ -67,6 +68,8 @@ export default function EquivalenceLab({ speech, sound, onExit }: Props) {
     } else {
       setCelebrate(null)
     }
+    // Reaching the finale = the lesson is complete. Fires once per arrival.
+    if (beatId === 'finale') onLessonComplete?.()
     return clearTimer
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [beatId])
@@ -136,7 +139,7 @@ export default function EquivalenceLab({ speech, sound, onExit }: Props) {
 
   return (
     <>
-      <div className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-4 py-4 sm:px-6">
+      <div className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-4 pr-28 py-4 sm:px-6 sm:pr-32">
         <div className="flex items-center gap-2">
           <button
             onClick={() => {

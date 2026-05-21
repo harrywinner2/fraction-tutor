@@ -168,6 +168,496 @@
       "id": "91205037c031621d",
       "file": "voice/91205037c031621d.mp3",
       "text": "Tap anywhere to begin."
+    },
+    {
+      "id": "ca2cd8d53c961957",
+      "file": "voice/ca2cd8d53c961957.mp3",
+      "text": "That's exactly one half of a glass. Beautiful. Ready for the next?"
+    },
+    {
+      "id": "e42a958d20726140",
+      "file": "voice/e42a958d20726140.mp3",
+      "text": "A little too much for one half. Tap empty and have another go."
+    },
+    {
+      "id": "d9e6b47f561d408d",
+      "file": "voice/d9e6b47f561d408d.mp3",
+      "text": "Just under one half. Tap empty and try again."
+    },
+    {
+      "id": "3f7c4408fa6f5432",
+      "file": "voice/3f7c4408fa6f5432.mp3",
+      "text": "Stop at one half…"
+    },
+    {
+      "id": "67ca3f6fcb091ee7",
+      "file": "voice/67ca3f6fcb091ee7.mp3",
+      "text": "Press and hold the button below. Pour the glass up to one half."
+    },
+    {
+      "id": "313e58b008ffbc4e",
+      "file": "voice/313e58b008ffbc4e.mp3",
+      "text": "That's exactly three quarters of a glass. Beautiful. Ready for the next?"
+    },
+    {
+      "id": "4a16de86ec27a155",
+      "file": "voice/4a16de86ec27a155.mp3",
+      "text": "A little too much for three quarters. Tap empty and have another go."
+    },
+    {
+      "id": "801d46d832515840",
+      "file": "voice/801d46d832515840.mp3",
+      "text": "Just under three quarters. Tap empty and try again."
+    },
+    {
+      "id": "b4184fe03239f9f7",
+      "file": "voice/b4184fe03239f9f7.mp3",
+      "text": "Stop at three quarters…"
+    },
+    {
+      "id": "6ebb444b2cc5ea8b",
+      "file": "voice/6ebb444b2cc5ea8b.mp3",
+      "text": "Press and hold the button below. Pour the glass up to three quarters."
+    },
+    {
+      "id": "4f2f8d4db940da74",
+      "file": "voice/4f2f8d4db940da74.mp3",
+      "text": "That's exactly one third of a glass. Beautiful. Ready for the next?"
+    },
+    {
+      "id": "f16024042b1c7051",
+      "file": "voice/f16024042b1c7051.mp3",
+      "text": "A little too much for one third. Tap empty and have another go."
+    },
+    {
+      "id": "8baf88a913c96ab2",
+      "file": "voice/8baf88a913c96ab2.mp3",
+      "text": "Just under one third. Tap empty and try again."
+    },
+    {
+      "id": "3fe00b74130899e8",
+      "file": "voice/3fe00b74130899e8.mp3",
+      "text": "Stop at one third…"
+    },
+    {
+      "id": "4953ab244b077cbe",
+      "file": "voice/4953ab244b077cbe.mp3",
+      "text": "Press and hold the button below. Pour the glass up to one third."
+    },
+    {
+      "id": "ec2cee84daac1ec6",
+      "file": "voice/ec2cee84daac1ec6.mp3",
+      "text": "That's exactly two thirds of a glass. Beautiful. Ready for the next?"
+    },
+    {
+      "id": "33b609ee1baa9e8b",
+      "file": "voice/33b609ee1baa9e8b.mp3",
+      "text": "A little too much for two thirds. Tap empty and have another go."
+    },
+    {
+      "id": "d492c874d2d05904",
+      "file": "voice/d492c874d2d05904.mp3",
+      "text": "Just under two thirds. Tap empty and try again."
+    },
+    {
+      "id": "449f000bd34332cf",
+      "file": "voice/449f000bd34332cf.mp3",
+      "text": "Stop at two thirds…"
+    },
+    {
+      "id": "0aa433a4439cf650",
+      "file": "voice/0aa433a4439cf650.mp3",
+      "text": "Press and hold the button below. Pour the glass up to two thirds."
+    },
+    {
+      "id": "7c9072a0b87ff658",
+      "file": "voice/7c9072a0b87ff658.mp3",
+      "text": "That's exactly one quarter of a glass. Beautiful. Ready for the next?"
+    },
+    {
+      "id": "bbc190945bab26f1",
+      "file": "voice/bbc190945bab26f1.mp3",
+      "text": "A little too much for one quarter. Tap empty and have another go."
+    },
+    {
+      "id": "f0cced813cab7889",
+      "file": "voice/f0cced813cab7889.mp3",
+      "text": "Just under one quarter. Tap empty and try again."
+    },
+    {
+      "id": "6a0ad67edc28c346",
+      "file": "voice/6a0ad67edc28c346.mp3",
+      "text": "Stop at one quarter…"
+    },
+    {
+      "id": "12acec87f4b789d9",
+      "file": "voice/12acec87f4b789d9.mp3",
+      "text": "Press and hold the button below. Pour the glass up to one quarter."
+    },
+    {
+      "id": "e1532b5cd8530222",
+      "file": "voice/e1532b5cd8530222.mp3",
+      "text": "You poured every single one. You really feel the fractions now."
+    },
+    {
+      "id": "0adb55bfc203760e",
+      "file": "voice/0adb55bfc203760e.mp3",
+      "text": "Perfectly poured — one half left in the glass. Onward!"
+    },
+    {
+      "id": "5e92b8b46b4988cc",
+      "file": "voice/5e92b8b46b4988cc.mp3",
+      "text": "Too much left — you needed only one half. Tap fill and try again."
+    },
+    {
+      "id": "ff1b99c2a72ed722",
+      "file": "voice/ff1b99c2a72ed722.mp3",
+      "text": "You poured a bit too far. Aim to leave one half. Tap fill and retry."
+    },
+    {
+      "id": "47cd3282915accb4",
+      "file": "voice/47cd3282915accb4.mp3",
+      "text": "Tap \"Listen for tilt\", then tilt the iPad to pour. Leave one half behind."
+    },
+    {
+      "id": "5d578626d74bc4da",
+      "file": "voice/5d578626d74bc4da.mp3",
+      "text": "Drag the slider to tilt the glass. Stop pouring when one half is left."
+    },
+    {
+      "id": "9ca15bf558209de1",
+      "file": "voice/9ca15bf558209de1.mp3",
+      "text": "Tilt to pour — stop when the water reaches one half."
+    },
+    {
+      "id": "e1d33ec69b6c2e3b",
+      "file": "voice/e1d33ec69b6c2e3b.mp3",
+      "text": "Perfectly poured — one third left in the glass. Onward!"
+    },
+    {
+      "id": "c09564c700d2c7be",
+      "file": "voice/c09564c700d2c7be.mp3",
+      "text": "Too much left — you needed only one third. Tap fill and try again."
+    },
+    {
+      "id": "8af428ad6259302b",
+      "file": "voice/8af428ad6259302b.mp3",
+      "text": "You poured a bit too far. Aim to leave one third. Tap fill and retry."
+    },
+    {
+      "id": "85b64dc8e1cb63dc",
+      "file": "voice/85b64dc8e1cb63dc.mp3",
+      "text": "Tap \"Listen for tilt\", then tilt the iPad to pour. Leave one third behind."
+    },
+    {
+      "id": "760137768aa83a36",
+      "file": "voice/760137768aa83a36.mp3",
+      "text": "Drag the slider to tilt the glass. Stop pouring when one third is left."
+    },
+    {
+      "id": "b98dd28a878d2521",
+      "file": "voice/b98dd28a878d2521.mp3",
+      "text": "Tilt to pour — stop when the water reaches one third."
+    },
+    {
+      "id": "dc329b13e4f041fb",
+      "file": "voice/dc329b13e4f041fb.mp3",
+      "text": "Perfectly poured — two thirds left in the glass. Onward!"
+    },
+    {
+      "id": "b2a7dfa2433dc42f",
+      "file": "voice/b2a7dfa2433dc42f.mp3",
+      "text": "Too much left — you needed only two thirds. Tap fill and try again."
+    },
+    {
+      "id": "aba20d52616c980c",
+      "file": "voice/aba20d52616c980c.mp3",
+      "text": "You poured a bit too far. Aim to leave two thirds. Tap fill and retry."
+    },
+    {
+      "id": "37d29aca30ae8297",
+      "file": "voice/37d29aca30ae8297.mp3",
+      "text": "Tap \"Listen for tilt\", then tilt the iPad to pour. Leave two thirds behind."
+    },
+    {
+      "id": "34e82b1b9aefc6c7",
+      "file": "voice/34e82b1b9aefc6c7.mp3",
+      "text": "Drag the slider to tilt the glass. Stop pouring when two thirds is left."
+    },
+    {
+      "id": "9c270fa8bdbdb0ea",
+      "file": "voice/9c270fa8bdbdb0ea.mp3",
+      "text": "Tilt to pour — stop when the water reaches two thirds."
+    },
+    {
+      "id": "647f4b7373a33261",
+      "file": "voice/647f4b7373a33261.mp3",
+      "text": "Perfectly poured — one quarter left in the glass. Onward!"
+    },
+    {
+      "id": "10045c6d4f56cce0",
+      "file": "voice/10045c6d4f56cce0.mp3",
+      "text": "Too much left — you needed only one quarter. Tap fill and try again."
+    },
+    {
+      "id": "72085c892c58e535",
+      "file": "voice/72085c892c58e535.mp3",
+      "text": "You poured a bit too far. Aim to leave one quarter. Tap fill and retry."
+    },
+    {
+      "id": "0542c4ba76943695",
+      "file": "voice/0542c4ba76943695.mp3",
+      "text": "Tap \"Listen for tilt\", then tilt the iPad to pour. Leave one quarter behind."
+    },
+    {
+      "id": "e37c0a3facf7d70b",
+      "file": "voice/e37c0a3facf7d70b.mp3",
+      "text": "Drag the slider to tilt the glass. Stop pouring when one quarter is left."
+    },
+    {
+      "id": "fce9b1c7a88c8a7f",
+      "file": "voice/fce9b1c7a88c8a7f.mp3",
+      "text": "Tilt to pour — stop when the water reaches one quarter."
+    },
+    {
+      "id": "1390f314494afe9f",
+      "file": "voice/1390f314494afe9f.mp3",
+      "text": "Perfectly poured — three quarters left in the glass. Onward!"
+    },
+    {
+      "id": "91ead5bf8c7e11ac",
+      "file": "voice/91ead5bf8c7e11ac.mp3",
+      "text": "Too much left — you needed only three quarters. Tap fill and try again."
+    },
+    {
+      "id": "a155d11307789358",
+      "file": "voice/a155d11307789358.mp3",
+      "text": "You poured a bit too far. Aim to leave three quarters. Tap fill and retry."
+    },
+    {
+      "id": "0e3780cb0e98b406",
+      "file": "voice/0e3780cb0e98b406.mp3",
+      "text": "Tap \"Listen for tilt\", then tilt the iPad to pour. Leave three quarters behind."
+    },
+    {
+      "id": "9603754cea43a882",
+      "file": "voice/9603754cea43a882.mp3",
+      "text": "Drag the slider to tilt the glass. Stop pouring when three quarters is left."
+    },
+    {
+      "id": "2706121ff8221977",
+      "file": "voice/2706121ff8221977.mp3",
+      "text": "Tilt to pour — stop when the water reaches three quarters."
+    },
+    {
+      "id": "d30a4a52d3cc6bd6",
+      "file": "voice/d30a4a52d3cc6bd6.mp3",
+      "text": "You poured every one. You're reading fractions like a chef."
+    },
+    {
+      "id": "61e53a9806f33059",
+      "file": "voice/61e53a9806f33059.mp3",
+      "text": "You sliced exactly one half of the cake. Magnificent. Next?"
+    },
+    {
+      "id": "7f56e8238743fdfb",
+      "file": "voice/7f56e8238743fdfb.mp3",
+      "text": "Close! That slice is a bit too big for one half. Slice again."
+    },
+    {
+      "id": "0eee31c51522d666",
+      "file": "voice/0eee31c51522d666.mp3",
+      "text": "Close! That slice is a bit too small for one half. Slice again."
+    },
+    {
+      "id": "56e09d8b1531f1bf",
+      "file": "voice/56e09d8b1531f1bf.mp3",
+      "text": "Swipe down across the cake along the dotted line to slice off one half of it."
+    },
+    {
+      "id": "536ed0e973fd7bff",
+      "file": "voice/536ed0e973fd7bff.mp3",
+      "text": "You sliced exactly one quarter of the cake. Magnificent. Next?"
+    },
+    {
+      "id": "e8feb51b41e17039",
+      "file": "voice/e8feb51b41e17039.mp3",
+      "text": "Close! That slice is a bit too big for one quarter. Slice again."
+    },
+    {
+      "id": "96a919a9446c7497",
+      "file": "voice/96a919a9446c7497.mp3",
+      "text": "Close! That slice is a bit too small for one quarter. Slice again."
+    },
+    {
+      "id": "caffa1b8713728a6",
+      "file": "voice/caffa1b8713728a6.mp3",
+      "text": "Swipe down across the cake along the dotted line to slice off one quarter of it."
+    },
+    {
+      "id": "18f308f907381733",
+      "file": "voice/18f308f907381733.mp3",
+      "text": "You sliced exactly one third of the cake. Magnificent. Next?"
+    },
+    {
+      "id": "7b6b0d6bff796e69",
+      "file": "voice/7b6b0d6bff796e69.mp3",
+      "text": "Close! That slice is a bit too big for one third. Slice again."
+    },
+    {
+      "id": "d192d0f757c6c1f1",
+      "file": "voice/d192d0f757c6c1f1.mp3",
+      "text": "Close! That slice is a bit too small for one third. Slice again."
+    },
+    {
+      "id": "a2b37c0f6e21e4ad",
+      "file": "voice/a2b37c0f6e21e4ad.mp3",
+      "text": "Swipe down across the cake along the dotted line to slice off one third of it."
+    },
+    {
+      "id": "e33c8c095bb04ac8",
+      "file": "voice/e33c8c095bb04ac8.mp3",
+      "text": "You sliced exactly three quarters of the cake. Magnificent. Next?"
+    },
+    {
+      "id": "cd65df959a57abf0",
+      "file": "voice/cd65df959a57abf0.mp3",
+      "text": "Close! That slice is a bit too big for three quarters. Slice again."
+    },
+    {
+      "id": "3b407ab16e615cd2",
+      "file": "voice/3b407ab16e615cd2.mp3",
+      "text": "Close! That slice is a bit too small for three quarters. Slice again."
+    },
+    {
+      "id": "2d7115a7abc972a8",
+      "file": "voice/2d7115a7abc972a8.mp3",
+      "text": "Swipe down across the cake along the dotted line to slice off three quarters of it."
+    },
+    {
+      "id": "9dd141d6a8cb3e21",
+      "file": "voice/9dd141d6a8cb3e21.mp3",
+      "text": "You sliced exactly one sixth of the cake. Magnificent. Next?"
+    },
+    {
+      "id": "0f332a423cf5cf26",
+      "file": "voice/0f332a423cf5cf26.mp3",
+      "text": "Close! That slice is a bit too big for one sixth. Slice again."
+    },
+    {
+      "id": "69e90ec681e78c52",
+      "file": "voice/69e90ec681e78c52.mp3",
+      "text": "Close! That slice is a bit too small for one sixth. Slice again."
+    },
+    {
+      "id": "92e2a2585afc510e",
+      "file": "voice/92e2a2585afc510e.mp3",
+      "text": "Swipe down across the cake along the dotted line to slice off one sixth of it."
+    },
+    {
+      "id": "e9583a05d12ab2f2",
+      "file": "voice/e9583a05d12ab2f2.mp3",
+      "text": "Every cake, sliced perfectly. You really see fractions in shapes now."
+    },
+    {
+      "id": "5841fdb5e7dbf0fe",
+      "file": "voice/5841fdb5e7dbf0fe.mp3",
+      "text": "Hmm, your swipe didn't cross the cake. Try a longer drag from edge to edge."
+    },
+    {
+      "id": "1d8d71baf5c80ffe",
+      "file": "voice/1d8d71baf5c80ffe.mp3",
+      "text": "Balanced! That weighs exactly one half. You matched every one — nice work. Here's a fresh set…"
+    },
+    {
+      "id": "20f2a4d346a15f30",
+      "file": "voice/20f2a4d346a15f30.mp3",
+      "text": "Balanced! Those fractions together weigh exactly one half — equivalent. Next one…"
+    },
+    {
+      "id": "987b1ed4aacf8ff9",
+      "file": "voice/987b1ed4aacf8ff9.mp3",
+      "text": "Make the right side weigh the same as one half on the left — using other fractions."
+    },
+    {
+      "id": "bd8b5e5492e56768",
+      "file": "voice/bd8b5e5492e56768.mp3",
+      "text": "Balanced! That weighs exactly three quarters. You matched every one — nice work. Here's a fresh set…"
+    },
+    {
+      "id": "43ecc8f154726086",
+      "file": "voice/43ecc8f154726086.mp3",
+      "text": "Balanced! Those fractions together weigh exactly three quarters — equivalent. Next one…"
+    },
+    {
+      "id": "43a6bb68e1739b19",
+      "file": "voice/43a6bb68e1739b19.mp3",
+      "text": "Make the right side weigh the same as three quarters on the left — using other fractions."
+    },
+    {
+      "id": "4bf1dbc3d25f4910",
+      "file": "voice/4bf1dbc3d25f4910.mp3",
+      "text": "Balanced! That weighs exactly two thirds. You matched every one — nice work. Here's a fresh set…"
+    },
+    {
+      "id": "c67cfa52504b3a44",
+      "file": "voice/c67cfa52504b3a44.mp3",
+      "text": "Balanced! Those fractions together weigh exactly two thirds — equivalent. Next one…"
+    },
+    {
+      "id": "7e0f0827a2dddf70",
+      "file": "voice/7e0f0827a2dddf70.mp3",
+      "text": "Make the right side weigh the same as two thirds on the left — using other fractions."
+    },
+    {
+      "id": "f8708b43b602ff4a",
+      "file": "voice/f8708b43b602ff4a.mp3",
+      "text": "Balanced! That weighs exactly one quarter. You matched every one — nice work. Here's a fresh set…"
+    },
+    {
+      "id": "628e47e242de80f9",
+      "file": "voice/628e47e242de80f9.mp3",
+      "text": "Balanced! Those fractions together weigh exactly one quarter — equivalent. Next one…"
+    },
+    {
+      "id": "204d200e1ed79707",
+      "file": "voice/204d200e1ed79707.mp3",
+      "text": "Make the right side weigh the same as one quarter on the left — using other fractions."
+    },
+    {
+      "id": "d463bbd6ef146338",
+      "file": "voice/d463bbd6ef146338.mp3",
+      "text": "Perfect — 2 cookies shared between 4 friends, so everyone gets one half of a cookie. Ready for a tougher one?"
+    },
+    {
+      "id": "66bd6b9a284f3acb",
+      "file": "voice/66bd6b9a284f3acb.mp3",
+      "text": "You did it! 2 cookies between 4 friends is one half each. Sharing fairly IS a fraction. Brilliant."
+    },
+    {
+      "id": "10471b049c7f4cf1",
+      "file": "voice/10471b049c7f4cf1.mp3",
+      "text": "Share 2 cookies fairly between 4 friends. Tap a cookie to cut it in half, then drag the pieces so everyone gets the same."
+    },
+    {
+      "id": "d6c55da73eee38a8",
+      "file": "voice/d6c55da73eee38a8.mp3",
+      "text": "Perfect — 3 cookies shared between 4 friends, so everyone gets three quarters of a cookie. Ready for a tougher one?"
+    },
+    {
+      "id": "077332f243923320",
+      "file": "voice/077332f243923320.mp3",
+      "text": "You did it! 3 cookies between 4 friends is three quarters each. Sharing fairly IS a fraction. Brilliant."
+    },
+    {
+      "id": "e13183471a2db1f1",
+      "file": "voice/e13183471a2db1f1.mp3",
+      "text": "Share 3 cookies fairly between 4 friends. Tap a cookie to cut it in half, then drag the pieces so everyone gets the same."
+    },
+    {
+      "id": "31676ab079ed5aed",
+      "file": "voice/31676ab079ed5aed.mp3",
+      "text": "Close! Someone has more than the others. Every friend needs the exact same amount — tap a piece to send it back and try again."
     }
   ]
 }

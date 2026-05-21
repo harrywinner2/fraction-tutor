@@ -73,6 +73,86 @@ function extractBeatTexts(src) {
   return out
 }
 
+/* ──────────────────────────────────────────────────────────────────────────────
+ * Game lines — enumerated in lockstep with each game's `message =` ternary so
+ * every concrete string Nova can say in a game becomes a cached MP3 at build
+ * time. Keep the templates here in sync with the corresponding games. The
+ * relevant LEVELS / ROUNDS arrays are mirrored verbatim from the source.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+// MIRROR: src/lib/frac.ts spokenLabel
+const CARD = ['zero','one','two','three','four','five','six','seven','eight','nine','ten']
+const DSING = { 2:'half',3:'third',4:'quarter',5:'fifth',6:'sixth',7:'seventh',8:'eighth',9:'ninth',10:'tenth' }
+const DPLUR = { 2:'halves',3:'thirds',4:'quarters',5:'fifths',6:'sixths',7:'sevenths',8:'eighths',9:'ninths',10:'tenths' }
+function spokenLabel(n, d) {
+  if (d === 1) return n === 1 ? 'one' : (CARD[n] ?? `${n}`)
+  const num = CARD[n] ?? `${n}`
+  if (n === 1 && DSING[d]) return `${num} ${DSING[d]}`
+  if (DPLUR[d]) return `${num} ${DPLUR[d]}`
+  return `${n} over ${d}`
+}
+function gcd(a, b) { return b === 0 ? Math.abs(a) : gcd(b, a % b) }
+function reduce([n, d]) { const g = gcd(n, d) || 1; return [n / g, d / g] }
+
+function buildGameLines() {
+  const out = new Set()
+  const add = (s) => out.add(s)
+
+  // MIRROR: src/games/PourIn.tsx — LEVELS and message ternary
+  for (const [n, d] of [[1,2],[3,4],[1,3],[2,3],[1,4]]) {
+    const T = spokenLabel(n, d)
+    add(`That's exactly ${T} of a glass. Beautiful. Ready for the next?`)
+    add(`A little too much for ${T}. Tap empty and have another go.`)
+    add(`Just under ${T}. Tap empty and try again.`)
+    add(`Stop at ${T}…`)
+    add(`Press and hold the button below. Pour the glass up to ${T}.`)
+  }
+  add(`You poured every single one. You really feel the fractions now.`)
+
+  // MIRROR: src/games/PourOut.tsx — LEVELS and message ternary
+  for (const [n, d] of [[1,2],[1,3],[2,3],[1,4],[3,4]]) {
+    const T = spokenLabel(n, d)
+    add(`Perfectly poured — ${T} left in the glass. Onward!`)
+    add(`Too much left — you needed only ${T}. Tap fill and try again.`)
+    add(`You poured a bit too far. Aim to leave ${T}. Tap fill and retry.`)
+    add(`Tap "Listen for tilt", then tilt the iPad to pour. Leave ${T} behind.`)
+    add(`Drag the slider to tilt the glass. Stop pouring when ${T} is left.`)
+    add(`Tilt to pour — stop when the water reaches ${T}.`)
+  }
+  add(`You poured every one. You're reading fractions like a chef.`)
+
+  // MIRROR: src/games/CakeSlice.tsx — LEVELS and message ternary
+  for (const [n, d] of [[1,2],[1,4],[1,3],[3,4],[1,6]]) {
+    const T = spokenLabel(n, d)
+    add(`You sliced exactly ${T} of the cake. Magnificent. Next?`)
+    add(`Close! That slice is a bit too big for ${T}. Slice again.`)
+    add(`Close! That slice is a bit too small for ${T}. Slice again.`)
+    add(`Swipe down across the cake along the dotted line to slice off ${T} of it.`)
+  }
+  add(`Every cake, sliced perfectly. You really see fractions in shapes now.`)
+  add(`Hmm, your swipe didn't cross the cake. Try a longer drag from edge to edge.`)
+
+  // MIRROR: src/games/BalanceScale.tsx — LEVELS and message ternary
+  for (const [n, d] of [[1,2],[3,4],[2,3],[1,4]]) {
+    const T = spokenLabel(n, d)
+    add(`Balanced! That weighs exactly ${T}. You matched every one — nice work. Here's a fresh set…`)
+    add(`Balanced! Those fractions together weigh exactly ${T} — equivalent. Next one…`)
+    add(`Make the right side weigh the same as ${T} on the left — using other fractions.`)
+  }
+
+  // MIRROR: src/games/CookieShare.tsx — ROUNDS and message ternary
+  for (const { kids, cookies } of [{ kids: 4, cookies: 2 }, { kids: 4, cookies: 3 }]) {
+    const [tN, tD] = reduce([cookies, kids])
+    const T = spokenLabel(tN, tD)
+    add(`Perfect — ${cookies} cookies shared between ${kids} friends, so everyone gets ${T} of a cookie. Ready for a tougher one?`)
+    add(`You did it! ${cookies} cookies between ${kids} friends is ${T} each. Sharing fairly IS a fraction. Brilliant.`)
+    add(`Share ${cookies} cookies fairly between ${kids} friends. Tap a cookie to cut it in half, then drag the pieces so everyone gets the same.`)
+  }
+  add(`Close! Someone has more than the others. Every friend needs the exact same amount — tap a piece to send it back and try again.`)
+
+  return [...out]
+}
+
 async function loadLines() {
   const scriptSrc = await readFile(join(ROOT, 'src', 'lesson', 'script.ts'), 'utf8')
   const beatLines = extractBeatTexts(scriptSrc)
@@ -84,9 +164,11 @@ async function loadLines() {
     extras = []
   }
 
+  const gameLines = buildGameLines()
+
   // Dedupe by normalised content so trivial whitespace differences don't double-cost us.
   const byNorm = new Map()
-  for (const t of [...beatLines, ...extras]) {
+  for (const t of [...beatLines, ...extras, ...gameLines]) {
     if (!t) continue
     const key = norm(t)
     if (!byNorm.has(key)) byNorm.set(key, t)

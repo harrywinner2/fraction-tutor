@@ -3,7 +3,7 @@ import type { useSpeech } from '../hooks/useSpeech'
 import type { useSound } from '../hooks/useSound'
 import GameShell from '../components/GameShell'
 import Celebration from '../components/Celebration'
-import { frac, label, toNum, type Frac } from '../lib/frac'
+import { frac, label, spokenLabel, toNum, type Frac } from '../lib/frac'
 
 /**
  * Tilt to Pour — the iPad's accelerometer is the controller.
@@ -26,6 +26,7 @@ interface Props {
   speech: ReturnType<typeof useSpeech>
   sound: ReturnType<typeof useSound>
   onExit: () => void
+  onRoundCleared?: (round: number, total: number) => void
 }
 
 // Target = how much should be LEFT in the glass after pouring.
@@ -37,7 +38,7 @@ const MAX_DRAIN_PER_SEC = 0.42 // ≈2.4 s to fully drain at max tilt
 
 type Permission = 'unknown' | 'granted' | 'denied' | 'unavailable'
 
-export default function PourOut({ speech, sound, onExit }: Props) {
+export default function PourOut({ speech, sound, onExit, onRoundCleared }: Props) {
   const [round, setRound] = useState(0)
   const [level, setLevel] = useState(1)
   const [tilt, setTilt] = useState(0)
@@ -124,6 +125,7 @@ export default function PourOut({ speech, sound, onExit }: Props) {
             sound.play('chime')
             sound.play('win')
             setFireKey((k) => k + 1)
+            onRoundCleared?.(round, LEVELS.length)
           } else if (diff > 0) {
             setResult('over')
             sound.play('pop')
@@ -143,7 +145,7 @@ export default function PourOut({ speech, sound, onExit }: Props) {
         lockTimer.current = null
       }
     }
-  }, [tilt, level, targetNum, result, sound])
+  }, [tilt, level, targetNum, result, sound, round, onRoundCleared])
 
   // Permission button — gated by a user gesture. iOS Safari only.
   const requestTilt = async () => {
@@ -199,26 +201,28 @@ export default function PourOut({ speech, sound, onExit }: Props) {
   const message =
     result === 'good'
       ? round + 1 < LEVELS.length
-        ? `${label(target)} left in the glass — perfectly poured. Onward!`
+        ? `Perfectly poured — ${spokenLabel(target)} left in the glass. Onward!`
         : `You poured every one. You're reading fractions like a chef.`
       : result === 'over'
-        ? `Too much left — you needed only ${label(target)}. Tap fill and try again.`
+        ? `Too much left — you needed only ${spokenLabel(target)}. Tap fill and try again.`
         : result === 'under'
-          ? `You poured a bit too far. Aim to leave ${label(target)}. Tap fill and retry.`
+          ? `You poured a bit too far. Aim to leave ${spokenLabel(target)}. Tap fill and retry.`
           : permission === 'unknown'
-            ? `Tap "Listen for tilt", then tilt the iPad to pour. Leave ${label(target)} behind.`
+            ? `Tap "Listen for tilt", then tilt the iPad to pour. Leave ${spokenLabel(target)} behind.`
             : permission === 'denied' || permission === 'unavailable'
-              ? `Drag the slider to tilt the glass. Stop pouring when ${label(target)} is left.`
-              : `Tilt to pour — stop when the water reaches ${label(target)}.`
+              ? `Drag the slider to tilt the glass. Stop pouring when ${spokenLabel(target)} is left.`
+              : `Tilt to pour — stop when the water reaches ${spokenLabel(target)}.`
 
-  // Glass geometry inside a 100x170 viewBox.
+  // Glass geometry inside a widened viewBox so the tilted glass can swing out
+  // without being clipped. Pivot is the glass base at (50, GY+GH).
+  // At ±22° rotation the top corners reach roughly x = 50 ± 70 → safely inside.
   const GX = 30
-  const GY = 24
+  const GY = 28
   const GW = 40
-  const GH = 128
+  const GH = 124
   const waterY = GY + GH * (1 - level)
   const targetY = GY + GH * (1 - targetNum)
-  const rot = Math.max(-30, Math.min(30, tilt * 0.55))
+  const rot = Math.max(-22, Math.min(22, tilt * 0.4))
   const draining = Math.abs(tilt) > TILT_POUR_DEG && level > 0 && result !== 'good'
 
   return (
@@ -226,7 +230,7 @@ export default function PourOut({ speech, sound, onExit }: Props) {
       <div className="flex h-full flex-col items-center justify-between px-4 pb-6 pt-2 sm:px-8">
         <div className="relative flex flex-1 items-center justify-center">
           <svg
-            viewBox="0 0 100 170"
+            viewBox="-30 -6 160 184"
             className="h-[56vh] max-h-[480px] w-auto"
             preserveAspectRatio="xMidYMid meet"
           >

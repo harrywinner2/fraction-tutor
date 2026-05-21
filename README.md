@@ -1,65 +1,266 @@
-# Slice — a fractions playground
+# Slice — fractions by feel
 
-A warm, hands-on way for a nine-year-old to *feel* fractions. A game-select
-hub opens onto several fraction games, each built around one direct-manipulation
-gesture and Nova, a scripted voice tutor.
+A warm, iPad-first prototype where a nine-year-old discovers equivalent
+fractions by **smashing chocolate, pouring water, slicing cake, and tilting a
+glass.** Six games, six framings of "fraction", one scripted tutor voice.
 
 **Live:** https://harrywinner2.github.io/fraction-tutor/
 
-It's built to be played on an iPad in the browser, held sideways, with sound on.
-
-## The games
-
-- **Equivalence Lab** — the deep, polished lesson. Smash a chocolate bar and
-  discover why ½ = 2/4 = 3/6, then prove the rule generalises (1/3 → 2/6).
-  This is the one that completes the brief end-to-end.
-- **Cookie Share** *(prototype)* — fraction as fair-sharing. Cut cookies and
-  drag the pieces so every friend gets the same; the friends smile when it's
-  fair and look glum when they have less than a peer.
-- **Balance Scale** *(prototype)* — fraction as weight. Drag fractions onto two
-  pans; the beam tips to the heavier side and balances when they're equal, so
-  comparison and equivalence become physical.
-- **Fill the Glass** *(iPad-touch)* — tap-and-hold the faucet to pour water
-  into a glass. Release at the target line. Teaches fraction as a *stopping
-  point* on a continuous quantity — the missing intuition between cookies and
-  the number line.
-- **Tilt to Pour** *(iPad-tilt)* — start with a full glass and use the iPad's
-  accelerometer to pour water out. Stop tilting when the level meets the
-  target. Teaches the inverse: the fraction that *remains*. (Falls back to a
-  drag-slider on devices without orientation events.)
-- **Slice the Cake** *(iPad-swipe)* — draw a straight cut across a round cake
-  with one finger. The chord-segment area is graded against the target
-  fraction. Fractions as a *choice of cut*, not a count of pre-made pieces.
-
-The Equivalence Lab is the complete demo-ready lesson; the rest are playable
-prototypes exploring other game dynamics.
+> Best on an iPad, held landscape, with sound on.
 
 ---
 
-## The Equivalence Lab lesson
+## What this is
 
-The flagship lesson is one tight arc: **explore → learn → check → generalise → win.**
+A submission for the team that builds the Synthesis fractions tutor. We built
+it in a sprint to demonstrate three things together:
 
-1. **Explore.** The student gets half a chocolate bar and is invited to *smash*
-   it. Each smash cuts every piece in two — but the gold part never grows or
-   shrinks. That's the revelation, discovered by hand before it's ever named.
-2. **Learn.** The tutor names what they just saw: one half and two quarters
-   reach the exact same line, so they're *equivalent*.
-3. **Check.** Warm, non-punishing checks:
-   - *Build it:* fill quarters until the bottom bar matches one half.
-   - *Spot it:* which fraction equals ½? Wrong answers get a gentle "look with
-     me" demo and a retry — never a buzzer.
-   - *Confirm it:* is 3/6 also a half? They reason straight off the bars.
-4. **Generalise.** The payoff: smash a *non-half* fraction — `1/3 → 2/6` — and
-   discover the rule isn't a half-trick, it holds for *any* fraction. This is
-   the "deep conceptual understanding" beat, not just pattern-matching.
-5. **Win.** A real celebration — the crowd cheers, the equals sign ignites,
-   and the discovery ledger reads `1/2 = 2/4 = 3/6` and `1/3 = 2/6`.
+1. **A real, end-to-end lesson.** *Equivalence Lab* is a complete scripted arc
+   — explore → name → check → generalise → win — that a kid can finish without
+   grown-up help.
+2. **Five "what-if" prototypes.** Each one maps a different *input grammar*
+   (touch pressure, accelerometer, swipe, drag, tap) to a different *framing*
+   of what a fraction is.
+3. **The infrastructure underneath.** Pre-rendered tutor voice, synthesised
+   audio, an exact-fraction arithmetic layer, persisted progression, and a
+   design system tuned to the Synthesis palette.
 
-The tutor's dialogue is entirely hand-scripted (no LLM), so the tone stays
-warm and the branching stays predictable for a young learner.
+Nothing in `src/` is borrowed or AI-generated at runtime. Everything in
+`public/voice/` is pre-rendered at build time.
 
-## Running it locally
+---
+
+## Six games, six framings of "fraction"
+
+| Game | Input grammar | Mental model the game builds |
+| --- | --- | --- |
+| **Equivalence Lab** *(flagship)* | Tap to smash, tap to build | Cut more pieces → the amount is conserved → fractions can be **equivalent** |
+| **Cookie Share** | Drag pieces onto friends | Fraction = the answer to **fair division** (3 cookies ÷ 4 friends = ¾ each) |
+| **Balance Scale** | Drag pieces onto pans | Fraction has **magnitude**; equivalent fractions weigh the same |
+| **Fill the Glass** | Tap and hold (release at the line) | Fraction = a **stopping point** along a continuum |
+| **Tilt to Pour** | iPad accelerometer | Fraction = **what remains** after pouring (inverse intuition) |
+| **Slice the Cake** | Swipe down a dotted line | Fraction = **proportional position** on a shape |
+
+The variety is the point. A nine-year-old who can match symbols isn't
+necessarily a child who *understands* fractions. Six different motor
+experiences push the same concept past pattern-matching into intuition.
+
+---
+
+## The Equivalence Lab arc
+
+The flagship is one tight loop: **explore → name → check (×3) → generalise → win.**
+
+1. **Explore.** Half a chocolate bar appears. The only affordance is *tap to
+   smash*. Each smash doubles the cuts, but the gold area never grows or
+   shrinks. The discovery happens **before** any vocabulary is introduced.
+2. **Name.** Nova labels what just happened — "one half and two quarters reach
+   the same line — they're *equivalent*."
+3. **Check.** Three warm, non-punishing checks: *build it* (fill quarters
+   until they match the half), *spot it* (which fraction equals ½?), *confirm
+   it* (true/false on 3/6). Wrong answers route to a "look with me" demo and a
+   retry — never a buzzer.
+4. **Generalise.** The conceptual transfer step: smash a *non-half* (⅓ → 2/6).
+   The rule wasn't a "halves trick"; it works for any fraction.
+5. **Win.** Confetti, a chime, and a discovery ledger that reads
+   `½ = 2/4 = 3/6` and `⅓ = 2/6` — the kid's own discovery in writing.
+
+Branching, tone, and recovery paths are all hand-scripted in
+`src/lesson/script.ts`. An LLM was deliberately not used for runtime dialogue
+— for a child-facing tutor, predictability + warmth + zero hallucination risk
+outweighs dynamic phrasing.
+
+---
+
+## Engineering choices
+
+### Voice is rendered at build time, not streamed at runtime
+
+The browser's built-in `SpeechSynthesis` is jarringly robotic on iPad —
+exactly the wrong note for a tutor that says *"you really get this now."* We
+needed Nova to feel warm. Two options:
+
+| Approach | Cost per session | First-utterance latency | Runtime API key | Offline |
+| --- | --- | --- | --- | --- |
+| Stream OpenAI TTS each session | ~$0.001 – 0.003 | ~500 – 800 ms | required | no |
+| **Pre-render at build time** | **$0** | **~50 – 150 ms** | none | yes |
+
+We pre-render. `scripts/generate-voice.mjs` does two things:
+
+1. **Extracts every static line** from `src/lesson/script.ts` via regex over
+   `text:` literals.
+2. **Enumerates every dynamic line** the games can emit, by mirroring each
+   game's `message` template × its `LEVELS` array. Currently **131 unique
+   lines** — one scripted lesson + ~98 game variants.
+
+Each line is keyed by `sha1(model | voice | format | text).slice(0, 16)`, so
+re-runs are incremental: a clip is skipped if its MP3 already exists on disk.
+At runtime `useSpeech` fetches `voice/manifest.json` once, builds a
+`text → file` map, and plays the matching MP3 through a single persistent
+`<audio>` element that is "blessed" inside the opening user gesture (iOS's
+autoplay rule). `SpeechSynthesis` stays as a graceful fallback so a brand-new
+beat never goes silent.
+
+**Result:** one ~$0.10 build covers every play, forever. No runtime API key
+on the client, no rate-limit risk, no streaming jitter.
+
+### Six different input vocabularies, tuned for nine-year-old motor skills
+
+Each game uses a different Web API as its primary input. The tuning details
+matter more than the choice of API:
+
+- **Pointer-pressure** (Fill the Glass) — `onPointerDown/Up/Leave/Cancel` all
+  stop the pour, so a finger drifting off the button counts as a release.
+  Tolerance: ±4.5% of full glass. A `queueMicrotask` flush reads the freshest
+  level before grading so the verdict is never one frame stale.
+- **DeviceOrientation** (Tilt to Pour) — iOS 13+ gates the API behind
+  `DeviceOrientationEvent.requestPermission()`, which we wire to a one-time
+  "Listen for tilt" user-gesture button. Tilt has a ±6° dead-band, a ±18°
+  pour threshold, and a 600 ms upright-lock before grading. A drag slider is
+  the silent fallback on devices without orientation events.
+- **Vertical-swipe-as-cut** (Slice the Cake) — diagonal swipes are projected
+  onto a single x-axis cut. A vertical reach of ≥60% of the cake's height is
+  required (otherwise it counts as "miss" — no spurious grading from a tap).
+  A pre-drawn dotted golden guide shows the *exact* target cut, because a
+  free-hand cut on glass is genuinely hard at this age.
+- **Drag-with-snap** (Cookie Share, Balance Scale) — `setPointerCapture`
+  survives fast swipes; drop zones use `getBoundingClientRect` for hit
+  testing. Both games run on exact-fraction arithmetic so "fair" is
+  unambiguous.
+- **Tap-as-smash** (Equivalence Lab) — one gesture, learned in a second, that
+  physically *is* the concept. Taps are forgiving and impossible to fumble
+  on glass.
+- **Speech-as-input everywhere** — Nova narrates every beat so reading isn't
+  a prerequisite, and a "hear that again" button is always within reach.
+
+Touch targets are all ≥44 px; the iOS tap highlight and text selection are
+suppressed; `touch-action: none` is set on every interactive area to prevent
+the scroll-vs-pan tug-of-war.
+
+### Synthesised audio, zero asset files
+
+`useSound` is a small WebAudio sound design. Each FX cue is a hand-shaped
+tone: a woody **smash** (triangle + saw, glide down), a sine **pop**, a
+tri-note **chime**, a four-note **win** arpeggio, a soft **tap**. The
+ambient music is a four-voice sine pad (A2/C#3/E3/A3, A major) with slow
+per-voice gain LFOs (0.04 – 0.07 Hz), low-passed at 1.4 kHz, mastered at
+**0.04 gain** — quiet enough to be subliminal, present enough to give the app
+a heartbeat. Music auto-starts on the first user gesture (the same gesture
+that unlocks iOS audio) and survives the session.
+
+Two global toggles live in the top-right of every screen:
+
+- **♪** Musical note — music on / off.
+- **🎙** Microphone — voice + sound effects on / off, in lockstep.
+
+### Exact-fraction arithmetic, never floating-point
+
+`src/lib/frac.ts` is 60 lines: `frac(n, d)` reduces with `gcd`, `add` keeps
+denominators integer, `eq` cross-multiplies. Equivalence is decided by
+`a.n * b.d === b.n * a.d`, so `1·4 === 2·2` lights the equals sign with
+perfect certainty. A `spokenLabel` helper (`1/2 → "one half"`,
+`3/4 → "three quarters"`) is used everywhere a fraction is read aloud, so
+the cached TTS clips key cleanly and the child reads natural English instead
+of "one slash two".
+
+### Progression as visible state
+
+`src/hooks/useProgress.ts` persists per-game completion to `localStorage`
+under `slice-progress-v1`. Each game calls
+`onRoundCleared(roundIndex, totalRounds)` on a successful round; the
+Equivalence Lab calls `onLessonComplete()` on the finale beat. The Hub
+renders:
+
+- A **progress pill** in the header — `9 / 22 cleared · 41 %`.
+- A **★ X / Y** badge on each sandbox tile, switching to a mint **✓ done**
+  when the game is fully cleared.
+- A **Done** chip on the flagship tile when the lesson has been finished
+  end-to-end.
+
+Storage is schema-versioned (`schemaVersion: 1`) so we can evolve the shape
+without trashing old saves. A "Reset progress" link in the Hub clears the
+slate.
+
+The Hub deliberately surfaces this state as the *first* thing the player
+sees. Even at this scale, progress that vanishes between sessions feels
+disposable; one persistent number turns the menu from a chooser into a
+journey.
+
+---
+
+## Design system — matching the Synthesis warmth
+
+The visual identity tracks the Synthesis tutor's: cosmic depth, warm gold
+accent, editorial typography, success-mint highlights.
+
+| Token | Hex | Used for |
+| --- | --- | --- |
+| `space-900` → `space-600` | `#070b16` → `#142046` | Cosmic background gradient stops |
+| `gold`, `gold-soft`, `gold-deep` | `#E3B23C`, `#EBC76A`, `#C8932A` | Primary CTAs, Nova's halo, focus rings, the target-cut line |
+| `cream` | `#F5F0E6` | Display and body type |
+| `mint` | `#5BD6A0` | Success states — "balanced", "exactly right", lesson-complete |
+
+Typography pairs **Fraunces** (display, italicised on emphasis — the
+"by *feel*" treatment that mirrors Synthesis's editorial voice) with
+**Geist** (sans). The Starfield is a slowly drifting field of 70 stars
+layered over a four-stop radial gradient and two soft nebula glows; each
+star has its own drift loop (60 – 120 s) on an outer span and a twinkle on
+an inner span, so the two animations don't fight over `transform`. The drift
+is deliberately subliminal — you notice it after a beat, not on entry.
+
+---
+
+## Tool stack
+
+| Layer | Choice | Why |
+| --- | --- | --- |
+| Build | **Vite 5** | Fast HMR, native ESM, tiny prod bundle |
+| UI | **React 18 + TypeScript 5.5** | Strict types catch fraction-math errors at compile time |
+| Styling | **Tailwind 3** + custom palette | Constraint-based; no CSS-in-JS overhead |
+| Motion | **Framer Motion 11** | Spring physics for the slice slide, smash shudder, equals-sign ignition |
+| Audio FX | **WebAudio** (synthesised) | No asset pipeline, iOS-blessed playback |
+| Voice | **OpenAI `gpt-4o-mini-tts`**, voice `nova`, pre-rendered | Warm, expressive, cached forever |
+| Sensors | **Pointer Events + DeviceOrientation** | iPad-native input grammars |
+| Persistence | **localStorage** (schema-versioned) | No backend, tiny payload |
+| Deploy | **GitHub Pages** | Static bundle, zero infra |
+
+---
+
+## Repo layout
+
+```
+src/
+  App.tsx                    router: hub ↔ each game, audio + progress wiring
+  lesson/script.ts           the entire equivalence lesson as data
+  voice/extras.json          static helper lines kept around for future tap-to-speak
+  hooks/
+    useSpeech.ts             cached-MP3-first, SpeechSynthesis-fallback
+    useSound.ts              synthesised FX + ambient music + mute control
+    useProgress.ts           per-game localStorage progression
+  components/
+    Hub.tsx                  game menu, progress badges, reset link
+    GlobalAudioToggles.tsx   top-right music / voice toggles
+    NovaAvatar.tsx           shared tutor face — blink, breathe, mouth-sync
+    FractionBar.tsx          smash/build chocolate-bar manipulative
+    Starfield.tsx            slow-drifting cosmic background
+    GameShell / Celebration / PauseMenu / TutorPanel / ...
+  games/
+    EquivalenceLab.tsx       the scripted lesson
+    CookieShare.tsx          fair-share prototype
+    BalanceScale.tsx         drag-to-balance prototype
+    PourIn.tsx               tap-and-hold to fill
+    PourOut.tsx              tilt to pour out
+    CakeSlice.tsx            swipe down a dotted line
+  lib/frac.ts                exact-fraction arithmetic + spokenLabel
+scripts/
+  generate-voice.mjs         build-time TTS → MP3 + manifest
+public/voice/
+  *.mp3, manifest.json       131 pre-rendered Nova clips
+```
+
+---
+
+## Running it
 
 Requires Node 20+.
 
@@ -73,128 +274,55 @@ npm run build    # type-check + production build to dist/
 npm run preview  # serve the production build
 ```
 
-### Pre-rendering Nova's voice (OpenAI TTS)
-
-Nova falls back to the browser's `SpeechSynthesis` voice, which is jarringly
-robotic on iPad. To ship a warm tutor voice, pre-render every conversation
-line with OpenAI's text-to-speech once at build time:
+### Pre-rendering Nova's voice
 
 ```bash
 OPENAI_API_KEY=sk-... npm run voice
 ```
 
-The script walks `src/lesson/script.ts` and `src/voice/extras.json`, hits the
-TTS endpoint (`gpt-4o-mini-tts` with voice `nova` by default), and writes mp3s
-to `public/voice/` plus a `manifest.json` mapping each text to its audio file.
-Re-runs are incremental — only new or changed lines are regenerated.
+Walks the lesson script, enumerates every concrete game line, and renders any
+missing clips. Re-runs are incremental — already-rendered MP3s are skipped.
 
-At runtime, `useSpeech` plays the cached clip when one matches; anything
-without a clip (a brand-new beat, a dynamic message) falls back to the
-browser voice so the lesson is never silent.
+| Var | Default | Notes |
+| --- | --- | --- |
+| `OPENAI_TTS_MODEL` | `gpt-4o-mini-tts` | Use `tts-1-hd` for the older high-quality model |
+| `OPENAI_TTS_VOICE` | `nova` | Try `shimmer`, `alloy`, `coral`, `verse` |
+| `OPENAI_TTS_FORMAT` | `mp3` | `opus` is smaller; `wav` is uncompressed |
 
-Useful env overrides:
+---
 
-| Var                  | Default            | Notes                                       |
-| -------------------- | ------------------ | ------------------------------------------- |
-| `OPENAI_TTS_MODEL`   | `gpt-4o-mini-tts`  | Use `tts-1-hd` for the older high-quality model. |
-| `OPENAI_TTS_VOICE`   | `nova`             | Try `shimmer`, `alloy`, `coral`, `verse`.   |
-| `OPENAI_TTS_FORMAT`  | `mp3`              | `opus` is smaller; `wav` is uncompressed.   |
+## What we'd ship next
 
+- **Adaptive difficulty.** The progression tracker already knows which rounds
+  the player has cleared; two more lines, and the next session can offer the
+  *uncleared* rounds first, then loop in cleared ones for confidence.
+- **A second lesson.** Mixed numbers, or addition of like fractions. The
+  state-machine shape in `script.ts` is the right level of abstraction to
+  author without re-engineering anything.
+- **Light haptics.** `navigator.vibrate(8)` on a smash,
+  `navigator.vibrate([6, 60, 12])` on a correct answer — supported on
+  Android, ignored gracefully elsewhere.
+- **Teacher view.** A read-only dashboard that consumes the same
+  `localStorage` blob (or a Synthesis-side telemetry shape) and surfaces
+  which children have done what.
+- **Voice variants.** The build script already supports `OPENAI_TTS_VOICE`
+  overrides — kids could pick their tutor's voice in the Hub.
 
-## Technical approach
-
-- **Vite + React + TypeScript** — a static single-page app, no backend, so it
-  deploys anywhere and there's no setup hell for a demo.
-- **The lesson is a small state machine.** Every screen is a "beat" in
-  `src/lesson/script.ts`: its line, its choices, its branches, and what the
-  stage shows. Wrong answers are just edges to warmer beats. All of the
-  teaching content lives in one readable file.
-- **The manipulative is the lesson.** `FractionBar` is one component that can
-  be *smashed* (every piece splits, the amount is conserved) or *built* (tap to
-  fill). Equivalence is detected with exact integer cross-multiplication —
-  never floating point — so `1·4 === 2·2` lights the equals sign.
-- **Warmth is engineered.** Nova reads every line aloud — the *good* path uses
-  pre-rendered OpenAI TTS clips (warm, expressive, on-brand) and the *fallback*
-  path uses the browser's `SpeechSynthesis` so the lesson is never silent on
-  a fresh checkout. Faces react to the lesson mood; every touch has a
-  synthesised sound.
-- **Motion** is Framer Motion: the smash shudder, the pieces springing apart,
-  the equals sign igniting, the confetti.
-
-```
-src/
-  App.tsx                 orchestrator: game-select hub + per-game routing
-  lesson/script.ts        the entire equivalence lesson as data
-  voice/extras.json       static lines that aren't beats (game intros etc.)
-  games/
-    EquivalenceLab.tsx    the scripted chocolate-bar lesson
-    CookieShare.tsx       fair-share-the-cookies prototype
-    BalanceScale.tsx      drag-to-balance prototype
-    PourIn.tsx            tap-and-hold to fill (iPad touch)
-    PourOut.tsx           tilt the device to drain (iPad accelerometer)
-    CakeSlice.tsx         swipe to slice (chord-area scoring)
-  components/
-    Hub.tsx               the game-select screen
-    NovaAvatar.tsx        the shared tutor face — blink, breathe, mouth-sync
-    FractionBar.tsx       the smash/build chocolate-bar manipulative
-    GameShell.tsx         shared back + Nova chrome around each prototype
-    Characters.tsx        the crowd that reacts (Cookie Share)
-    Starfield / PauseMenu / Celebration
-  hooks/
-    useSpeech.ts          cached-MP3-first, SpeechSynthesis-fallback
-    useSound.ts           synthesised tactile audio
-scripts/
-  generate-voice.mjs      build script: TTS → public/voice/*.mp3 + manifest
-public/voice/             pre-rendered Nova voice clips + manifest.json
-```
-
-## iPad roadmap
-
-The app is built iPad-web-first and is already usable on one; this is how it's
-tuned for touch and what differs from desktop.
-
-**Layout.** Landscape is the primary canvas (it mirrors the side-by-side
-tutor/manipulative split). At iPad-landscape width the tutor sits in a fixed
-left column with the scene to its right; below that width the scene moves up
-top and the tutor drops beneath it so nothing is ever cramped. `viewport-fit=cover`
-plus safe-area padding keeps content clear of the camera notch and home
-indicator, and `user-scalable=no` stops a stray double-tap from zooming the
-canvas mid-lesson.
-
-**Touch targets.** Every interactive element is at least 44–56px on its short
-edge: the answer buttons are 56px tall, the pause/replay/mute controls are
-44px circles, and the chocolate bar itself is the biggest target on screen
-(`clamp(64px,12vh,108px)` tall, up to 680px wide) so a small finger can't miss
-it. The iOS tap highlight and text selection are disabled so it feels like an
-app, not a web page.
-
-**Gestures.** The signature move is a single tap to *smash* — chosen over a
-drag because taps are forgiving for nine-year-olds and impossible to fumble on
-glass. Building a fraction is tap-to-fill. There are no hover states; every
-affordance (the pulsing "tap to smash" chip, the igniting equals sign) is
-visible without a cursor.
-
-**Audio.** iOS only allows speech and sound to start from a user gesture, so
-the experience opens with one big "Tap to begin" that primes both the speech
-synthesiser and the audio context. A mute toggle and a "hear that again"
-button are always within reach.
-
-**What changes from desktop.** Desktop gets hover affordances on the buttons
-and a roomier two-column layout; otherwise the experience is identical. The
-next touch-specific steps would be: optional light haptics via the Vibration
-API on smash and on a correct answer, a portrait "turn me sideways" nudge, and
-Add-to-Home-Screen polish (icon + splash) so it launches fullscreen like a
-native app.
+---
 
 ## Notes on a few decisions
 
-- **Chocolate bar, not pizza.** Equivalence is a comparison of *length*. A bar
-  makes "the gold stops at the same line" undeniable in a way a circle's area
-  can't.
-- **Smash as the one gesture.** One move, learned in a second, that physically
-  *is* the concept: cut it more, it's still the same amount.
+- **Chocolate bar, not pizza.** Equivalence is a comparison of *length*. A
+  bar makes "the gold stops at the same line" undeniable in a way a circle's
+  area can't.
+- **One gesture per game, not a control panel.** Every game commits to one
+  primary input. The kid never has to learn a UI — they just touch the thing.
 - **No wrong-answer buzzer.** Every miss routes to a beat that shows *why* on
-  the bars and invites another try. The recovery is where the warmth lives.
-- **Scripted, not generative.** For one lesson aimed at a child, a hand-written
-  script is warmer, safer, and more reliable than a model — and it's the right
-  scope for the brief.
+  the bars and invites another try. The warmth lives in the recovery, not the
+  reward.
+- **Scripted dialogue, not generative.** Hand-written warmth, predictable
+  branches, zero hallucination risk, free at runtime. For one child-facing
+  lesson, this is the right tradeoff.
+- **Synthesised audio everywhere.** Zero asset files to ship, instant
+  first-play, and each cue is tuned to its manipulative rather than
+  approximated by a stock library.

@@ -4,12 +4,13 @@ import type { useSpeech } from '../hooks/useSpeech'
 import type { useSound } from '../hooks/useSound'
 import GameShell from '../components/GameShell'
 import Celebration from '../components/Celebration'
-import { add, eq, frac, label, toNum, type Frac } from '../lib/frac'
+import { add, eq, frac, label, spokenLabel, toNum, type Frac } from '../lib/frac'
 
 interface Props {
   speech: ReturnType<typeof useSpeech>
   sound: ReturnType<typeof useSound>
   onExit: () => void
+  onRoundCleared?: (round: number, total: number) => void
 }
 
 interface Tile {
@@ -34,7 +35,7 @@ const POOL: Frac[] = [
 // using *other* fractions (the target's own value is removed from the palette).
 const LEVELS: Frac[] = [frac(1, 2), frac(3, 4), frac(2, 3), frac(1, 4)]
 
-export default function BalanceScale({ speech, sound, onExit }: Props) {
+export default function BalanceScale({ speech, sound, onExit, onRoundCleared }: Props) {
   const [level, setLevel] = useState(0)
   const [right, setRight] = useState<Tile[]>([])
   const [solved, setSolved] = useState(false)
@@ -77,6 +78,7 @@ export default function BalanceScale({ speech, sound, onExit }: Props) {
       sound.play('win')
       sound.play('chime')
       setFireKey((k) => k + 1)
+      onRoundCleared?.(level, LEVELS.length)
       clearAdvance()
       // Savour the balanced beam, then on to the next fractions.
       advance.current = window.setTimeout(
@@ -84,14 +86,14 @@ export default function BalanceScale({ speech, sound, onExit }: Props) {
         2400,
       )
     }
-  }, [balanced, solved, sound])
+  }, [balanced, solved, sound, level, onRoundCleared])
 
   const lastLevel = level === LEVELS.length - 1
   const message = solved
     ? lastLevel
-      ? `Balanced! That weighs exactly ${label(target)}. You matched every one — nice work. Here's a fresh set…`
-      : `Balanced! Those fractions together weigh exactly ${label(target)} — equivalent. Next one…`
-    : `Make the right side weigh the same as ${label(target)} on the left — using other fractions.`
+      ? `Balanced! That weighs exactly ${spokenLabel(target)}. You matched every one — nice work. Here's a fresh set…`
+      : `Balanced! Those fractions together weigh exactly ${spokenLabel(target)} — equivalent. Next one…`
+    : `Make the right side weigh the same as ${spokenLabel(target)} on the left — using other fractions.`
 
   const diff = toNum(rSum) - toNum(target) // >0 → right heavier → right drops
   const angle = Math.max(-13, Math.min(13, diff * 22))

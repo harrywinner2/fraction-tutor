@@ -29,8 +29,10 @@ export default function GameShell({ speech, onExit, message, title, children }: 
 
   return (
     <div className="flex h-full w-full flex-col">
-      {/* top: back + Nova line + audio */}
-      <div className="z-20 flex items-start gap-3 px-4 pt-4 sm:px-6">
+      {/* top: back + Nova line + replay. Mute lives in GlobalAudioToggles
+       *  (top-right of the viewport); pr-28 reserves space so the bubble
+       *  doesn't run under those icons. */}
+      <div className="z-20 flex items-start gap-3 px-4 pr-28 pt-4 sm:px-6 sm:pr-32">
         <button
           onClick={() => {
             speech.cancel()
@@ -64,23 +66,6 @@ export default function GameShell({ speech, onExit, message, title, children }: 
               <path d="M3 12a9 9 0 1 0 3-6.7" />
               <path d="M3 3v5h5" />
             </svg>
-          </button>
-          <button
-            onClick={speech.toggleMute}
-            aria-label={speech.muted ? 'Turn voice on' : 'Turn voice off'}
-            className="grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-white/5 text-cream/80 transition hover:bg-white/10 active:scale-95"
-          >
-            {speech.muted ? (
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M11 5 6 9H2v6h4l5 4z" />
-                <path d="m23 9-6 6M17 9l6 6" />
-              </svg>
-            ) : (
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M11 5 6 9H2v6h4l5 4z" />
-                <path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a9 9 0 0 1 0 14" />
-              </svg>
-            )}
           </button>
         </div>
       </div>

@@ -262,6 +262,17 @@ export function useSpeech() {
     })
   }, [cancel])
 
+  const setMutedExplicit = useCallback(
+    (next: boolean) => {
+      setMuted((prev) => {
+        if (prev === next) return prev
+        if (next) cancel()
+        return next
+      })
+    },
+    [cancel],
+  )
+
   return {
     supported,
     muted,
@@ -273,5 +284,6 @@ export function useSpeech() {
     cancel,
     prime,
     toggleMute,
+    setMuted: setMutedExplicit,
   }
 }
