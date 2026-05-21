@@ -43,6 +43,11 @@ export default function EquivalenceLab({ speech, sound, onExit, onLessonComplete
   const advanceTimer = useRef<number | null>(null)
   const celebrateKey = useRef(1)
   const beat = BEATS[beatId]
+  // `speech` is a fresh wrapper object on every render. We capture it in a
+  // ref so the cleanup-on-unmount effect (and other speech-dependent effects)
+  // don't refire each render and cancel the in-flight clip mid-playback.
+  const speechRef = useRef(speech)
+  speechRef.current = speech
 
   const interactiveSpec: BarSpec | null =
     beat.stage.top && beat.stage.top !== 'keep' && beat.stage.top.interactive
@@ -74,8 +79,10 @@ export default function EquivalenceLab({ speech, sound, onExit, onLessonComplete
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [beatId])
 
-  // Stop speech when leaving the lesson entirely.
-  useEffect(() => () => speech.cancel(), [speech])
+  // Stop speech when leaving the lesson entirely. Depend on `[]` (not
+  // `[speech]`) because the hook returns a fresh wrapper each render; depending
+  // on the wrapper would cancel every clip on every re-render.
+  useEffect(() => () => speechRef.current.cancel(), [])
 
   const goTo = useCallback((next: string) => {
     clearTimer()

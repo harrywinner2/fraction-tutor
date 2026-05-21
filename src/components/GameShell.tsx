@@ -19,13 +19,20 @@ interface Props {
  */
 export default function GameShell({ speech, onExit, message, title, children }: Props) {
   const last = useRef('')
+  // `speech` is a fresh wrapper object on every render of the parent (the
+  // hook returns a literal). If we depend on it directly the cleanup below
+  // fires on every render, pausing each clip before it can produce sound.
+  // Stash it in a ref and depend only on `message` / no deps for cleanup.
+  const speechRef = useRef(speech)
+  speechRef.current = speech
+
   useEffect(() => {
     if (message && message !== last.current) {
       last.current = message
-      speech.speak(message)
+      speechRef.current.speak(message)
     }
-  }, [message, speech])
-  useEffect(() => () => speech.cancel(), [speech])
+  }, [message])
+  useEffect(() => () => speechRef.current.cancel(), [])
 
   return (
     <div className="flex h-full w-full flex-col">
