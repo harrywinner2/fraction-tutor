@@ -54,6 +54,15 @@ export function useSpeech() {
   const [muted, setMuted] = useState(false)
   const [speaking, setSpeaking] = useState(false)
   const [usingCachedVoice, setUsingCachedVoice] = useState(false)
+  /** Progress of the initial clip prefetch — drives the loading screen. */
+  const [loadProgress, setLoadProgress] = useState<{ loaded: number; total: number }>({
+    loaded: 0,
+    total: 0,
+  })
+  /** `true` once the manifest is parsed AND every clip has been pulled into
+   *  the HTTP cache (or has errored). Always flips to true within the timeout
+   *  even if the network is slow, so the lesson never blocks forever. */
+  const [ready, setReady] = useState(false)
 
   const mutedRef = useRef(muted)
   mutedRef.current = muted
@@ -81,26 +90,82 @@ export function useSpeech() {
     return audioElRef.current
   }
 
-  // Fetch the voice manifest once. If it's missing or empty we just fall back
-  // to SpeechSynthesis — the lesson is still usable.
+  // Fetch the voice manifest once, then prefetch every clip into the HTTP
+  // cache so playback is instant the first time a line is spoken. If the
+  // manifest is missing or empty we just fall back to SpeechSynthesis — the
+  // lesson is still usable.
   useEffect(() => {
     if (typeof window === 'undefined') return
+    let cancelled = false
     const base = import.meta.env.BASE_URL || '/'
     const url = `${base}voice/manifest.json`
-    fetch(url, { cache: 'force-cache' })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((m: Manifest | null) => {
-        if (!m || !Array.isArray(m.lines)) return
-        const map = new Map<string, string>()
-        for (const line of m.lines) {
-          map.set(normalize(line.text), `${base}${line.file}`)
+
+    // Hard ceiling so we never block forever on a flaky network — the player
+    // can start without every clip warmed up; SpeechSynthesis covers what
+    // hasn't loaded yet.
+    const READY_DEADLINE_MS = 15_000
+    const deadlineTimer = window.setTimeout(() => {
+      if (!cancelled) setReady(true)
+    }, READY_DEADLINE_MS)
+
+    ;(async () => {
+      let manifest: Manifest | null = null
+      try {
+        const r = await fetch(url, { cache: 'force-cache' })
+        if (r.ok) manifest = (await r.json()) as Manifest
+      } catch {
+        /* falls through to readiness with manifest=null */
+      }
+
+      if (!manifest || !Array.isArray(manifest.lines)) {
+        if (!cancelled) setReady(true)
+        window.clearTimeout(deadlineTimer)
+        return
+      }
+
+      const map = new Map<string, string>()
+      const urls: string[] = []
+      const seen = new Set<string>()
+      for (const line of manifest.lines) {
+        const file = `${base}${line.file}`
+        map.set(normalize(line.text), file)
+        if (!seen.has(file)) {
+          seen.add(file)
+          urls.push(file)
         }
-        manifestRef.current = map
-        setUsingCachedVoice(map.size > 0)
+      }
+      manifestRef.current = map
+      setUsingCachedVoice(map.size > 0)
+      setLoadProgress({ loaded: 0, total: urls.length })
+
+      // Parallel prefetch with a small concurrency cap — Safari hates dozens
+      // of parallel audio fetches, but 8 is comfortably fast on a phone tether.
+      const CONCURRENCY = 8
+      let cursor = 0
+      let done = 0
+      const workers = Array.from({ length: Math.min(CONCURRENCY, urls.length) }, async () => {
+        while (true) {
+          if (cancelled) return
+          const i = cursor++
+          if (i >= urls.length) return
+          try {
+            await fetch(urls[i], { cache: 'force-cache' })
+          } catch {
+            /* one bad clip shouldn't block the rest */
+          }
+          done++
+          if (!cancelled) setLoadProgress({ loaded: done, total: urls.length })
+        }
       })
-      .catch(() => {
-        /* silent — fallback handles it */
-      })
+      await Promise.all(workers)
+      if (!cancelled) setReady(true)
+      window.clearTimeout(deadlineTimer)
+    })()
+
+    return () => {
+      cancelled = true
+      window.clearTimeout(deadlineTimer)
+    }
   }, [])
 
   // SpeechSynthesis voice pick (fallback path).
@@ -280,6 +345,11 @@ export function useSpeech() {
     /** True iff the OpenAI-rendered voice manifest is loaded — UI uses this to
      *  decide whether to advertise "warm Nova voice" affordances. */
     usingCachedVoice,
+    /** Loading progress for the initial prefetch. */
+    loadProgress,
+    /** Manifest parsed + all clips prefetched (or timed out). The app can now
+     *  start without first-utterance jitter. */
+    ready,
     speak,
     cancel,
     prime,

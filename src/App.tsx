@@ -4,7 +4,9 @@ import { useSound } from './hooks/useSound'
 import { useProgress, type ProgressGameId } from './hooks/useProgress'
 import Starfield from './components/Starfield'
 import GlobalAudioToggles from './components/GlobalAudioToggles'
+import LoadingScreen from './components/LoadingScreen'
 import Hub, { type GameId } from './components/Hub'
+import ProgressPage from './components/ProgressPage'
 import EquivalenceLab from './games/EquivalenceLab'
 import CookieShare from './games/CookieShare'
 import BalanceScale from './games/BalanceScale'
@@ -12,27 +14,36 @@ import PourIn from './games/PourIn'
 import PourOut from './games/PourOut'
 import CakeSlice from './games/CakeSlice'
 
+type Screen = 'hub' | 'progress' | GameId
+
 /**
  * The shell. One starfield, one set of audio hooks, one progress store, and a
- * tiny router between the game-select hub and each fraction game. Audio is
- * primed on the first tile tap — the user gesture iOS requires before any
- * speech or sound.
+ * tiny router between the game-select hub and each fraction game.
+ *
+ * Audio is unlocked once via the LoadingScreen's "Tap to begin" button —
+ * that single user gesture primes SpeechSynthesis, blesses the persistent
+ * <audio> element, and starts the ambient music. While the user reads the
+ * loading screen, every voice clip in the manifest is being pulled into the
+ * HTTP cache in the background so the first spoken line plays instantly.
  */
 export default function App() {
-  const [screen, setScreen] = useState<'hub' | GameId>('hub')
+  const [screen, setScreen] = useState<Screen>('hub')
+  const [started, setStarted] = useState(false)
   const speech = useSpeech()
   const sound = useSound()
   const progress = useProgress()
 
-  const pick = (id: GameId) => {
+  const begin = () => {
     speech.prime()
     sound.unlock()
-    setScreen(id)
+    setStarted(true)
   }
+  const pick = (id: GameId) => setScreen(id)
   const toHub = () => {
     speech.cancel()
     setScreen('hub')
   }
+  const toProgress = () => setScreen('progress')
 
   // Per-game progression callback — every game calls this when a round is
   // cleared. The `id` argument is closured so each game receives a clean
@@ -51,10 +62,29 @@ export default function App() {
     <div className="relative h-full w-full overflow-hidden bg-space-900 font-sans">
       <Starfield />
       <div className="pointer-events-none absolute inset-0 grain" aria-hidden />
-      <GlobalAudioToggles speech={speech} sound={sound} />
+
+      {!started && (
+        <LoadingScreen
+          loaded={speech.loadProgress.loaded}
+          total={speech.loadProgress.total}
+          ready={speech.ready}
+          onBegin={begin}
+        />
+      )}
+
+      {started && <GlobalAudioToggles speech={speech} sound={sound} />}
+
       <main className="relative z-10 h-full w-full">
         {screen === 'hub' && (
-          <Hub onPick={pick} progress={progress.state} onReset={progress.resetAll} />
+          <Hub
+            onPick={pick}
+            progress={progress.state}
+            onReset={progress.resetAll}
+            onViewProgress={toProgress}
+          />
+        )}
+        {screen === 'progress' && (
+          <ProgressPage progress={progress.state} onBack={toHub} onReset={progress.resetAll} />
         )}
         {screen === 'equivalence' && (
           <EquivalenceLab

@@ -114,9 +114,10 @@ interface HubProps {
   onPick: (id: GameId) => void
   progress: ProgressState
   onReset: () => void
+  onViewProgress: () => void
 }
 
-export default function Hub({ onPick, progress, onReset }: HubProps) {
+export default function Hub({ onPick, progress, onReset, onViewProgress }: HubProps) {
   const flagship = TILES.find((t) => t.id === 'equivalence')!
   const sandbox = TILES.filter((t) => t.id !== 'equivalence')
   const overall = totalCleared(progress)
@@ -136,7 +137,7 @@ export default function Hub({ onPick, progress, onReset }: HubProps) {
         <p className="text-sm text-cream/35">Best on an iPad, held sideways · sound on 🔊</p>
 
         {/* progression summary */}
-        <ProgressSummary overall={overall} onReset={onReset} />
+        <ProgressSummary overall={overall} onReset={onReset} onViewProgress={onViewProgress} />
       </header>
 
       {/* tiles */}
@@ -175,31 +176,47 @@ export default function Hub({ onPick, progress, onReset }: HubProps) {
 function ProgressSummary({
   overall,
   onReset,
+  onViewProgress,
 }: {
   overall: { earned: number; total: number }
   onReset: () => void
+  onViewProgress: () => void
 }) {
   if (overall.total === 0) {
     return (
-      <p className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[0.72rem] uppercase tracking-[0.16em] text-cream/40">
-        Fresh start · no rounds cleared yet
-      </p>
+      <div className="flex flex-wrap items-center gap-3">
+        <p className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[0.72rem] uppercase tracking-[0.16em] text-cream/40">
+          Fresh start · no rounds cleared yet
+        </p>
+        <button
+          onClick={onViewProgress}
+          className="text-[0.7rem] uppercase tracking-[0.16em] text-cream/45 transition hover:text-gold-soft"
+        >
+          View progress →
+        </button>
+      </div>
     )
   }
   const pct = Math.round((overall.earned / overall.total) * 100)
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <div className="flex items-center gap-2 rounded-full border border-gold/35 bg-gold/[0.07] px-3 py-1.5">
+      <button
+        onClick={onViewProgress}
+        className="flex items-center gap-2 rounded-full border border-gold/35 bg-gold/[0.07] px-3 py-1.5 transition hover:border-gold/55 hover:bg-gold/15"
+      >
         <StarIcon className="h-3.5 w-3.5 text-gold-soft" />
         <span className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-gold-soft">
           {overall.earned} / {overall.total} cleared · {pct}%
         </span>
-      </div>
+        <span className="text-[0.66rem] uppercase tracking-[0.18em] text-gold-soft/70">
+          View →
+        </span>
+      </button>
       <button
         onClick={onReset}
         className="text-[0.7rem] uppercase tracking-[0.16em] text-cream/35 transition hover:text-cream/65"
       >
-        Reset progress
+        Reset
       </button>
     </div>
   )

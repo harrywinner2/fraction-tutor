@@ -104,6 +104,42 @@ beat never goes silent.
 **Result:** one ~$0.10 build covers every play, forever. No runtime API key
 on the client, no rate-limit risk, no streaming jitter.
 
+### Voice is preloaded before the player meets Nova
+
+A subtle problem with the manifest-then-play approach: the first time each
+clip is referenced, the browser has to fetch its MP3 over the network. On
+3G that's a visible delay between the text rendering and Nova's voice — the
+worst possible synchronisation issue, because a kid is reading silently
+while the tutor catches up.
+
+So during the loading screen we **prefetch every clip in parallel** into the
+HTTP cache:
+
+```ts
+// useSpeech.ts — runs once on mount, before the user taps begin
+const CONCURRENCY = 8           // Safari hates dozens of parallel audio fetches
+let done = 0
+await Promise.all(workers(urls, async (url) => {
+  await fetch(url, { cache: 'force-cache' })   // populates the HTTP cache
+  setLoadProgress({ loaded: ++done, total: urls.length })
+}))
+setReady(true)
+```
+
+By the time the player taps "Tap to begin," every `<audio src={url}>` later
+in the session hits the cache and plays in ~50 ms instead of waiting on the
+network. A 15 s deadline forces `ready = true` regardless — a slow connection
+can never block the lesson, only delay the cached-first warmth.
+
+**The loading screen earns its keep three ways:**
+1. It's the one place where the iOS autoplay gate gets satisfied — the "Tap
+   to begin" button is the user gesture that unlocks both `SpeechSynthesis`
+   and the persistent `<audio>` element for later programmatic playback.
+2. It shows an honest progress bar ("47 / 131 clips") instead of a fake
+   spinner, so the wait feels purposeful.
+3. The ambient music file gets a head-start on its own preload too, so
+   music begins the instant the player enters the Hub.
+
 ### Six different input vocabularies, tuned for nine-year-old motor skills
 
 Each game uses a different Web API as its primary input. The tuning details
@@ -137,16 +173,24 @@ Touch targets are all ≥44 px; the iOS tap highlight and text selection are
 suppressed; `touch-action: none` is set on every interactive area to prevent
 the scroll-vs-pan tug-of-war.
 
-### Synthesised audio, zero asset files
+### Audio: synthesised FX + a real royalty-free track
 
-`useSound` is a small WebAudio sound design. Each FX cue is a hand-shaped
-tone: a woody **smash** (triangle + saw, glide down), a sine **pop**, a
-tri-note **chime**, a four-note **win** arpeggio, a soft **tap**. The
-ambient music is a four-voice sine pad (A2/C#3/E3/A3, A major) with slow
-per-voice gain LFOs (0.04 – 0.07 Hz), low-passed at 1.4 kHz, mastered at
-**0.04 gain** — quiet enough to be subliminal, present enough to give the app
-a heartbeat. Music auto-starts on the first user gesture (the same gesture
-that unlocks iOS audio) and survives the session.
+**FX are synthesised.** Each cue is a hand-shaped WebAudio tone: a woody
+**smash** (triangle + saw, glide down), a sine **pop**, a tri-note
+**chime**, a four-note **win** arpeggio, a soft **tap**. Zero asset files,
+instant first-play, and every cue is tuned to its manipulative rather than
+approximated by a stock library.
+
+**Music is real.** We started with a synthesised pad and it sounded like a
+drone, not music. So we swapped it for a real track:
+
+> *Easy Lemon (60 second)* — Kevin MacLeod ([incompetech.com](https://incompetech.com))
+> Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
+Plays through a single persistent `HTMLAudioElement` with `loop = true`,
+volume 0.22, started on the first user gesture (the same gesture that
+unlocks iOS audio) and survives the session. Mute ramps the element's
+volume to 0 over 250 ms and pauses it once silent.
 
 Two global toggles live in the top-right of every screen:
 
@@ -163,28 +207,32 @@ perfect certainty. A `spokenLabel` helper (`1/2 → "one half"`,
 the cached TTS clips key cleanly and the child reads natural English instead
 of "one slash two".
 
-### Progression as visible state
+### Progression as visible state — with a dedicated page
 
 `src/hooks/useProgress.ts` persists per-game completion to `localStorage`
 under `slice-progress-v1`. Each game calls
 `onRoundCleared(roundIndex, totalRounds)` on a successful round; the
-Equivalence Lab calls `onLessonComplete()` on the finale beat. The Hub
-renders:
+Equivalence Lab calls `onLessonComplete()` on the finale beat. The hook
+tracks the **set** of cleared round indices per game (so out-of-order play
+counts honestly), the total rounds, and first / latest play timestamps.
 
-- A **progress pill** in the header — `9 / 22 cleared · 41 %`.
-- A **★ X / Y** badge on each sandbox tile, switching to a mint **✓ done**
-  when the game is fully cleared.
-- A **Done** chip on the flagship tile when the lesson has been finished
-  end-to-end.
+Surfaces:
+
+- The **Hub** shows a `★ X / Y cleared · Z %` pill that doubles as a link to
+  the full breakdown, plus per-tile badges (`★ 3/5` → mint `✓ 5/5` on
+  completion) and a "Done" chip on the flagship.
+- The **Progress page** (`src/components/ProgressPage.tsx`) is its own
+  screen: a hero ring showing overall completion, then a card per game with
+  round-by-round dots, a "Finished 3 days ago" recency line, and a colour
+  coded ring per game. It's reachable from the Hub's progress pill and from
+  any game's back button via the Hub.
 
 Storage is schema-versioned (`schemaVersion: 1`) so we can evolve the shape
-without trashing old saves. A "Reset progress" link in the Hub clears the
-slate.
+without trashing old saves. A "Reset progress" link clears the slate.
 
-The Hub deliberately surfaces this state as the *first* thing the player
-sees. Even at this scale, progress that vanishes between sessions feels
-disposable; one persistent number turns the menu from a chooser into a
-journey.
+Even at this scale, progress that vanishes between sessions feels
+disposable; making it both glanceable on the Hub *and* explorable on its
+own page turns the menu from a chooser into a journey.
 
 ---
 
@@ -238,7 +286,9 @@ src/
     useSound.ts              synthesised FX + ambient music + mute control
     useProgress.ts           per-game localStorage progression
   components/
+    LoadingScreen.tsx        voice-clip preload + "Tap to begin" gesture
     Hub.tsx                  game menu, progress badges, reset link
+    ProgressPage.tsx         dedicated progress dashboard
     GlobalAudioToggles.tsx   top-right music / voice toggles
     NovaAvatar.tsx           shared tutor face — blink, breathe, mouth-sync
     FractionBar.tsx          smash/build chocolate-bar manipulative
@@ -256,7 +306,18 @@ scripts/
   generate-voice.mjs         build-time TTS → MP3 + manifest
 public/voice/
   *.mp3, manifest.json       131 pre-rendered Nova clips
+public/music/
+  ambient.mp3                Kevin MacLeod, "Easy Lemon (60 second)" · CC BY 4.0
 ```
+
+## Credits
+
+- **Music** — *Easy Lemon (60 second)* by Kevin MacLeod
+  ([incompetech.com](https://incompetech.com)), licensed
+  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+- **Voice** — *Nova*, pre-rendered with OpenAI `gpt-4o-mini-tts`.
+- **Type** — Fraunces (Google Fonts, OFL) + Geist (Vercel, OFL).
+- Everything else — hand-written for this submission.
 
 ---
 

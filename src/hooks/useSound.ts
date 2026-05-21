@@ -1,14 +1,22 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 type Cue = 'smash' | 'pop' | 'chime' | 'win' | 'tap'
 
 /**
- * Tiny WebAudio sound design — synthesised, so there are zero asset files to
- * ship and nothing to wait on. Each cue is a short shaped tone meant to make
- * the manipulative feel physical: a woody "smash", a soft "pop", a bright
- * "chime" when two fractions line up. Also hosts the ambient music loop — a
- * soft, low-volume major-triad pad with slow breath, started on the first
- * gesture (iOS autoplay gate) and toggleable from the global controls.
+ * Audio hub for the app:
+ *
+ *   • **FX** — a tiny WebAudio sound design (synthesised, zero asset files).
+ *     Each cue is a short shaped tone meant to make the manipulative feel
+ *     physical: a woody "smash", a soft "pop", a bright "chime".
+ *
+ *   • **Music** — a real royalty-free track ("Easy Lemon (60 second)" by
+ *     Kevin MacLeod, CC-BY 4.0) played through a single HTMLAudioElement
+ *     with `loop = true`. We chose a real track over a longer synthesised
+ *     loop because real music has *intent* — phrasing, rest, return — and
+ *     the synth version was just a drone.
+ *
+ *   • **iOS autoplay** — both paths are unlocked from the first user
+ *     gesture by `unlock()`, which also kicks off `startMusic()`.
  */
 export function useSound() {
   const ctxRef = useRef<AudioContext | null>(null)
@@ -17,11 +25,10 @@ export function useSound() {
   const fxMutedRef = useRef(false)
   fxMutedRef.current = fxMuted
 
-  // Ambient music graph — built on first startMusic(), then survives the
-  // session. Volume is shaped by `musicGainRef`; muting just ramps it to 0.
-  const musicGainRef = useRef<GainNode | null>(null)
+  // Ambient music — one persistent <audio> element, looping.
+  const musicElRef = useRef<HTMLAudioElement | null>(null)
   const musicStartedRef = useRef(false)
-  const MUSIC_VOLUME = 0.04 // deliberately quiet; "low-volume tune"
+  const MUSIC_VOLUME = 0.22 // a real track, so we want it audible — not subliminal
 
   const ctx = () => {
     if (!ctxRef.current) {
@@ -35,58 +42,23 @@ export function useSound() {
     return ctxRef.current
   }
 
-  /** One sustained sine voice with a slow gain LFO for "breath". */
-  const padVoice = (ac: AudioContext, master: GainNode, freq: number, lfoHz: number, phase: number) => {
-    const osc = ac.createOscillator()
-    osc.type = 'sine'
-    osc.frequency.value = freq
-
-    const voiceGain = ac.createGain()
-    voiceGain.gain.value = 0.5
-
-    // LFO on the voice gain — gently swells each note 0.3 → 1.0 → 0.3.
-    const lfo = ac.createOscillator()
-    lfo.type = 'sine'
-    lfo.frequency.value = lfoHz
-    const lfoDepth = ac.createGain()
-    lfoDepth.gain.value = 0.35
-    lfo.connect(lfoDepth).connect(voiceGain.gain)
-
-    osc.connect(voiceGain).connect(master)
-    const t0 = ac.currentTime + phase
-    osc.start(t0)
-    lfo.start(t0)
-  }
-
-  const buildMusic = (ac: AudioContext) => {
-    const master = ac.createGain()
-    master.gain.value = musicMuted ? 0 : MUSIC_VOLUME
-    // A gentle low-pass keeps things soft — no harsh upper harmonics.
-    const lp = ac.createBiquadFilter()
-    lp.type = 'lowpass'
-    lp.frequency.value = 1400
-    lp.Q.value = 0.5
-    master.connect(lp).connect(ac.destination)
-
-    // A major triad (A2, C#3, E3) plus a soft octave halo on top (A3).
-    padVoice(ac, master, 110.0, 0.07, 0)
-    padVoice(ac, master, 138.59, 0.06, 0.5)
-    padVoice(ac, master, 164.81, 0.05, 1.0)
-    padVoice(ac, master, 220.0, 0.04, 1.5)
-
-    musicGainRef.current = master
-  }
-
-  /** Begin the ambient loop. Idempotent. Safe to call before unlock — the
-   *  AudioContext will start suspended and resume on the first gesture. */
+  /** Begin the ambient music. Idempotent. Must be called inside a user
+   *  gesture on iOS — `unlock()` already does that. */
   const startMusic = useCallback(() => {
     if (musicStartedRef.current) return
-    const ac = ctx()
-    if (!ac) return
-    buildMusic(ac)
     musicStartedRef.current = true
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    if (typeof window === 'undefined') return
+    const base = import.meta.env.BASE_URL || '/'
+    const el = new Audio(`${base}music/ambient.mp3`)
+    el.loop = true
+    el.preload = 'auto'
+    el.volume = musicMuted ? 0 : MUSIC_VOLUME
+    el.setAttribute('playsinline', '')
+    musicElRef.current = el
+    el.play().catch(() => {
+      /* autoplay blocked — toggling the music button will resume. */
+    })
+  }, [musicMuted])
 
   /** Call once on the opening tap so iOS lets us make sound later. */
   const unlock = useCallback(() => {
@@ -94,21 +66,35 @@ export function useSound() {
     startMusic()
   }, [startMusic])
 
+  // Reflect mute state on the music element. Gentle ramp avoids the click.
+  useEffect(() => {
+    const el = musicElRef.current
+    if (!el) return
+    const from = el.volume
+    const to = musicMuted ? 0 : MUSIC_VOLUME
+    if (from === to) return
+    const start = performance.now()
+    const dur = 250
+    const tick = (now: number) => {
+      const k = Math.min(1, (now - start) / dur)
+      el.volume = from + (to - from) * k
+      if (k < 1) requestAnimationFrame(tick)
+      else if (musicMuted) {
+        // pause once we've ramped down — saves a touch of CPU
+        try {
+          el.pause()
+        } catch {
+          /* no-op */
+        }
+      }
+    }
+    if (!musicMuted && el.paused) el.play().catch(() => {})
+    requestAnimationFrame(tick)
+  }, [musicMuted])
+
   const toggleFxMuted = useCallback(() => setFxMuted((m) => !m), [])
   const setFxMutedExplicit = useCallback((next: boolean) => setFxMuted(next), [])
-  const toggleMusicMuted = useCallback(() => {
-    setMusicMuted((m) => {
-      const next = !m
-      const ac = ctxRef.current
-      const g = musicGainRef.current
-      if (ac && g) {
-        // Smooth ramp avoids the click of an instant gain jump.
-        g.gain.cancelScheduledValues(ac.currentTime)
-        g.gain.linearRampToValueAtTime(next ? 0 : MUSIC_VOLUME, ac.currentTime + 0.25)
-      }
-      return next
-    })
-  }, [])
+  const toggleMusicMuted = useCallback(() => setMusicMuted((m) => !m), [])
 
   const tone = (
     ac: AudioContext,
